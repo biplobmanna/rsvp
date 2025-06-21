@@ -1,0 +1,27 @@
+<div class="flex min-h-screen flex-col justify-center">
+  <div class="flex justify-center">
+    <form
+      action="/check-whoami"
+      method="post"
+      class="max-w-2xl"
+      enctype="application/x-www-form-urlencoded"
+    >
+      <label for="Token">
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-200">
+          Token
+        </span>
+
+        <input
+          type="text"
+          id="token"
+          name="token"
+          class="mt-0.5 w-full rounded border-gray-300 shadow-sm sm:text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"
+          required
+        />
+      </label>
+      <button type="submit" class="mt-4 w-1/2 rounded-lg border p-1">
+        Submit
+      </button>
+    </form>
+  </div>
+</div>

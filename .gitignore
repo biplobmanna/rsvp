@@ -1,0 +1,15 @@
+# go related
+build/
+tmp/
+
+# project related
+.env
+
+# compressed files by fiber
+*.fiber.gz
+
+# node related
+node_modules/
+
+# IDE related
+.vscode/
