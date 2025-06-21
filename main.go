@@ -6,9 +6,6 @@ import (
 
 func main() {
 	// comment/un-comment this line as needed
-	// this is to run migrationso
-	// db := rsvp.Connect()
-	// rsvp.MigrateAll(db)
 
 	app := rsvp.App()
 

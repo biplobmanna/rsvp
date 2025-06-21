@@ -10,8 +10,7 @@ import (
 func InitApp(s Settings) *fiber.App {
 	engine := django.New(s.TEMPLATE_DIR, s.TEMPLATE_EXTENSION)
 
-	var app *fiber.App
-	app = fiber.New(fiber.Config{
+	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
 
@@ -23,6 +22,15 @@ func App() *fiber.App {
 	s := Settings{}
 	s.BuildConf()
 
+	// Migrate Refresh And connect DB
+	// Use when you want a fresh DB
+	// db := MigrateRefreshAndConnectDB()
+	// SeedAdmin(s, db)
+	// seedUser(s, db)
+
+	// Use for normal situations
+	db := ConnectDB()
+
 	// Initialise the App
 	app := InitApp(s)
 
@@ -30,7 +38,7 @@ func App() *fiber.App {
 	AddStatic(app, s)
 
 	// Add the URLs
-	AddUrls(app)
+	AddUrls(app, db)
 
 	// Return the App instance
 	return app

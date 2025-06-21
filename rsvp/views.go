@@ -35,7 +35,7 @@ func CheckWhoAmI(c *fiber.Ctx) error {
 func CardView(c *fiber.Ctx) error {
 	var whoami WhoAmI
 	var err error
-	err, whoami = GetTokenCookie(c)
+	whoami, err = GetTokenCookie(c)
 	if err != nil {
 		return err
 	}

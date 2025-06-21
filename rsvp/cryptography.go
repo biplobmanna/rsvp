@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 )
 
-func EcryptAES(s Settings, text string) (string, error) {
+func EncryptAES(s Settings, text string) (string, error) {
 	// initialize the aes with the SECRET_KEY
 	c, err := aes.NewCipher([]byte(s.SECRET_KEY))
 	if err != nil {

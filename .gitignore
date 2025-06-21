@@ -13,3 +13,6 @@ node_modules/
 
 # IDE related
 .vscode/
+
+# Ignore SQLite DB
+*.db

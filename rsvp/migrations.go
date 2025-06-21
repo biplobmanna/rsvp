@@ -12,3 +12,10 @@ func MigrateAll(db *gorm.DB) {
 	Migrate(db, &Admin{})
 	Migrate(db, &User{})
 }
+
+func MigrateRefreshAndConnectDB() *gorm.DB {
+	DestroyDB()
+	db := ConnectDB()
+	MigrateAll(db)
+	return db
+}

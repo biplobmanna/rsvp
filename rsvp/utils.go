@@ -29,12 +29,12 @@ func SetTokenCookie(c *fiber.Ctx, token string) {
 	c.Cookie(cookie)
 }
 
-func GetTokenCookie(c *fiber.Ctx) (error, WhoAmI) {
+func GetTokenCookie(c *fiber.Ctx) (WhoAmI, error) {
 	whoami := new(WhoAmI)
 	if err := c.CookieParser(whoami); err != nil {
-		return err, *whoami
+		return *whoami, err
 	}
 	fmt.Println(whoami)
 
-	return nil, *whoami
+	return *whoami, nil
 }

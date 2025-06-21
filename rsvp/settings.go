@@ -56,8 +56,7 @@ func (s *Settings) BuildConf() *Settings {
 }
 
 func ParseDotEnv() map[string]string {
-	var m map[string]string
-	m = make(map[string]string)
+	m := make(map[string]string)
 
 	// open the dotEnv file
 	f, err := os.Open("./.env")

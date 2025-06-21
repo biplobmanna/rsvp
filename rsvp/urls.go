@@ -1,8 +1,11 @@
 package rsvp
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
+)
 
-func AddUrls(app *fiber.App) {
+func AddUrls(app *fiber.App, db *gorm.DB) {
 	// Add the URLs
 	app.Get("/", IndexView).Name("index")
 	app.Get("/whoami", WhoAmIView).Name("whoami")
