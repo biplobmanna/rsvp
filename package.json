@@ -1,0 +1,36 @@
+{
+  "name": "rsvp",
+  "version": "1.0.0",
+  "description": "rsvp website",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tailwind": "npx tailwindcss -i tailwind.input.css -o ./static/css/main.css --optimize --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/biplobmanna/rsvp.git"
+  },
+  "keywords": [
+    "rsvp",
+    "go",
+    "website"
+  ],
+  "author": "biplobmanna",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/biplobmanna/rsvp/issues"
+  },
+  "homepage": "https://github.com/biplobmanna/rsvp#readme",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.10",
+    "tailwindcss": "^4.1.10"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "prettier-plugin-tailwindcss": "^0.6.13"
+  }
+}
