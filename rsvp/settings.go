@@ -1,6 +1,12 @@
 package rsvp
 
-import "time"
+import (
+	"bufio"
+	"log"
+	"os"
+	"strings"
+	"time"
+)
 
 type Settings struct {
 	// STATIC FILES
@@ -17,9 +23,16 @@ type Settings struct {
 	// TEMPLATES
 	TEMPLATE_DIR       string
 	TEMPLATE_EXTENSION string
+
+	// SECRETS
+	SECRET_KEY  string
+	ADMIN_TOKEN string
 }
 
 func (s *Settings) BuildConf() *Settings {
+	// Read from dotEnv
+	dotEnvMap := ParseDotEnv()
+
 	// STATIC DEFAULT CONF
 	s.STATIC_DIR = "./static"
 	s.STATIC_URL = "/static"
@@ -35,5 +48,45 @@ func (s *Settings) BuildConf() *Settings {
 	s.TEMPLATE_DIR = "./templates"
 	s.TEMPLATE_EXTENSION = ".html"
 
+	// SECRETS
+	s.SECRET_KEY = dotEnvMap["SECRET_KEY"]
+	s.ADMIN_TOKEN = dotEnvMap["ADMIN_TOKEN"]
+
 	return s
+}
+
+func ParseDotEnv() map[string]string {
+	var m map[string]string
+	m = make(map[string]string)
+
+	// open the dotEnv file
+	f, err := os.Open("./.env")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// close when all reading is done
+	defer f.Close()
+
+	// scanner to read line-by-line
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		line := scanner.Text()
+		// ignore comments with #
+		// ignore blank lines or lines with only spaces
+		if strings.HasPrefix(line, "#") || strings.TrimSpace(line) == "" {
+			continue
+		}
+		// split on `=` into key, value pairs
+		list := strings.SplitN(line, "=", 2)
+		// trim leading, and trailing spaces and add to the hashmap
+		m[strings.TrimSpace(list[0])] = strings.TrimSpace(list[1])
+	}
+
+	// if any error encountered while reading dotEnv
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	return m
 }
