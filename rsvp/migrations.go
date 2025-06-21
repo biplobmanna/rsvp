@@ -1,10 +1,13 @@
 package rsvp
 
 import (
+	"fmt"
+
 	"gorm.io/gorm"
 )
 
 func Migrate[M Model](db *gorm.DB, m *M) {
+	fmt.Println("Migrating ", m)
 	db.AutoMigrate(&m)
 }
 

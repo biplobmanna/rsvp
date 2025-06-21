@@ -17,7 +17,7 @@ func SeedAdmin(s Settings, db *gorm.DB) {
 	errors, rowsAffected := 0, 0
 	for i := range 10 {
 		user := fake.Internet().User()
-		token, err := EncryptAES(s, user+strconv.Itoa(i))
+		token, err := EncryptAES(s, user+s.ADMIN_TOKEN+strconv.Itoa(i))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -26,7 +26,7 @@ func SeedAdmin(s Settings, db *gorm.DB) {
 			Token: token,
 		}
 
-		result := db.Create(admin)
+		result := db.Create(&admin)
 		if result.Error != nil {
 			errors += 1
 		} else {
@@ -36,6 +36,7 @@ func SeedAdmin(s Settings, db *gorm.DB) {
 	fmt.Println("Seeding Admin:")
 	fmt.Println("Rows Affected: ", rowsAffected)
 	fmt.Println("Errors While Seeding: ", errors)
+	fmt.Println()
 }
 
 func seedUser(s Settings, db *gorm.DB) {
@@ -43,7 +44,7 @@ func seedUser(s Settings, db *gorm.DB) {
 	errors, rowsAffected := 0, 0
 	for i := range SEEDERS {
 		username := fake.Internet().User()
-		token, err := EncryptAES(s, username+strconv.Itoa(i))
+		token, err := EncryptAES(s, username+s.ADMIN_TOKEN+strconv.Itoa(i))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -55,7 +56,7 @@ func seedUser(s Settings, db *gorm.DB) {
 			Rsvp:     false,
 			Comments: "",
 		}
-		result := db.Create(user)
+		result := db.Create(&user)
 
 		if result.Error != nil {
 			errors += 1
@@ -66,4 +67,5 @@ func seedUser(s Settings, db *gorm.DB) {
 	fmt.Println("Seeding User:")
 	fmt.Println("Rows Affected: ", rowsAffected)
 	fmt.Println("Errors While Seeding: ", errors)
+	fmt.Println()
 }

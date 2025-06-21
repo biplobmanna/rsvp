@@ -1,6 +1,7 @@
 package rsvp
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -23,5 +24,7 @@ func DestroyDB() {
 	err := os.Remove(DATABASE_NAME)
 	if err != nil {
 		log.Fatal(err)
+	} else {
+		fmt.Println("Deleting ", DATABASE_NAME, "...")
 	}
 }
