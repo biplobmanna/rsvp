@@ -1,0 +1,85 @@
+<div class="flex min-h-screen flex-col justify-center">
+  <div class="flex justify-center">
+    <div
+      class="w-full max-w-sm rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6 md:p-8 dark:border-gray-700 dark:bg-gray-800">
+      <form class="space-y-6" {{ if .Update }} action="/admin/users/{{ .User.ID }}" {{ else }} action="/admin/users" {{
+        end }} method="post" enctype="application/x-www-form-urlencoded">
+        <h5 class="text-xl font-medium text-gray-900 dark:text-white">
+          Update User Data
+        </h5>
+        {{ if .Update }}
+        <div>
+          <label for="id" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+            User ID
+          </label>
+          <input type="number" name="id" id="id"
+            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+            value="{{ .User.ID }}" readonly />
+        </div>
+        {{ end }}
+        <div>
+          <label for="user" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+            Username
+          </label>
+          <input type="text" name="user" id="user"
+            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+            placeholder="username" pattern="[a-zA-Z0-9_]+" required {{ if .Update }} value="{{ .User.User }}" {{ end
+            }} />
+        </div>
+        <div>
+          <label for="fullname" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+            Full Name
+          </label>
+          <input type="text" name="fullname" id="fullname"
+            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+            placeholder="John Doe" pattern="[a-zA-Z ]+" required {{ if .Update }} value="{{ .User.FullName }}" {{ end
+            }} />
+        </div>
+        <div>
+          <label for="email" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+            Your email
+          </label>
+          <input type="email" name="email" id="email"
+            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+            placeholder="name@domain.com" required {{ if .Update }} value="{{ .User.Email }}" {{ end }} />
+        </div>
+        <div>
+          <label for="phone" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+            Phone
+          </label>
+          <input type="tel" name="phone" id="phone"
+            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+            placeholder="+91-9123456789" pattern="\+{0,1}(91){0,1}-{0,1}[6-9]{1}[0-9]{9}" required {{ if .Update }}
+            value="{{ .User.Phone }}" {{ end }} />
+        </div>
+        <div class="flex space-x-2">
+          <input type="checkbox" name="rsvp" id="rsvp" class="p2.5 mb-2" {{ if .Update }} {{ if .User.Rsvp }} checked
+            {{end}} {{ end }} />
+          <label for="rsvp" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+            RSVP
+          </label>
+        </div>
+        <div>
+          <label for="comments" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+            Comments
+          </label>
+          {{ if .Update }}
+          <textarea name="comments" id="comments"
+            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+            placeholder="Any additional comments..." maxlength="255">
+{{ .User.Comments }}</textarea>
+          {{ else }}
+          <textarea name="comments" id="comments"
+            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+            placeholder="Any additional comments..." maxlength="255"></textarea>
+          {{ end }}
+        </div>
+
+        <button type="submit"
+          class="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+          SAVE
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
