@@ -19,8 +19,10 @@ type Admin struct {
 type User struct {
 	gorm.Model
 	User     string
-	Token    string
 	FullName string
+	Token    string
+	Email    string
+	Phone    string
 	Rsvp     bool
 	Comments string
 }
