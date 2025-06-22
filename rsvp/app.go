@@ -1,14 +1,16 @@
 package rsvp
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/template/django/v3"
+	"github.com/gofiber/template/html/v2"
 )
 
 // Separate function to initialize App, to modularize
 // and to test
 func InitApp(s Settings) *fiber.App {
-	engine := django.New(s.TEMPLATE_DIR, s.TEMPLATE_EXTENSION)
+	engine := html.New(s.TEMPLATE_DIR, s.TEMPLATE_EXTENSION)
 
 	app := fiber.New(fiber.Config{
 		Views: engine,
@@ -24,12 +26,13 @@ func App() *fiber.App {
 
 	// Migrate Refresh And connect DB
 	// Use when you want a fresh DB
-	// db := MigrateRefreshAndConnectDB()
-	// SeedAdmin(s, db)
-	// seedUser(s, db)
+	// DB := MigrateRefreshAndConnectDB()
+	// SeedAdmin(s, DB)
+	// seedUser(s, DB)
 
 	// Use for normal situations
-	db := ConnectDB()
+	DB := ConnectDB()
+	fmt.Println("  ⚫ DB:", DB.Name())
 
 	// Initialise the App
 	app := InitApp(s)
@@ -38,7 +41,7 @@ func App() *fiber.App {
 	AddStatic(app, s)
 
 	// Add the URLs
-	AddUrls(app, db)
+	AddUrls(app)
 
 	// Return the App instance
 	return app
