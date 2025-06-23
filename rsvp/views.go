@@ -47,7 +47,7 @@ func CardView(c *fiber.Ctx) error {
 		SetTokenCookie(c, whoami.Token)
 		return c.Render("card", fiber.Map{
 			"Title": "RSVP CARD",
-		}, "base")
+		}, "card-base")
 	} else {
 		return c.Redirect("/whoami")
 	}
