@@ -46,7 +46,9 @@ func CardView(c *fiber.Ctx) error {
 
 // GET: RSVP action for the user
 func RsvpView(c *fiber.Ctx) error {
-	return c.SendString("RSVP View")
+	return c.Render("rsvp", fiber.Map{
+		"Title": "RSVP",
+	}, "base")
 }
 
 // ALL: Redirect User to GET: /whoami page
