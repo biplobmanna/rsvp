@@ -62,6 +62,7 @@ func ParseDotEnv() map[string]string {
 	f, err := os.Open("./.env")
 	if err != nil {
 		log.Fatal(err)
+		return m
 	}
 
 	// close when all reading is done
