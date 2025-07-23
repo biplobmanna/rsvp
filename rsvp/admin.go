@@ -28,10 +28,8 @@ func AdminCheckWhoAmI(c *fiber.Ctx) error {
 		// and if valid, then update token
 
 		// extract token from cookie
-		whoami, err := GetTokenCookie(c)
-		if err != nil {
-			return c.SendStatus(fiber.StatusExpectationFailed)
-		}
+		whoami := GetTokenCookie(c)
+
 		// if contains valid token, return "Token Validated"
 		// else, return error
 		if whoami.ValidateToken() {
