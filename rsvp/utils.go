@@ -6,9 +6,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// TEMPORARY TOKEN, to be later transferred to .env
-var DEMO_TOKEN = "DEMO"
-
 // struct to hold the token
 type WhoAmI struct {
 	Token string `json:"token" xml:"token" form:"token" cookie:"token"`

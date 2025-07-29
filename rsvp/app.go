@@ -27,8 +27,8 @@ func App() *fiber.App {
 	// Migrate Refresh And connect DB
 	// Use when you want a fresh DB
 	// DB := MigrateRefreshAndConnectDB()
-	// SeedAdmin(s, DB)
-	// seedUser(s, DB)
+	// SeedAdmin(SETTINGS, DB)
+	// seedUser(SETTINGS, DB)
 
 	// Use for normal situations
 	DB := ConnectDB()
