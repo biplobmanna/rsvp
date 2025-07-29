@@ -31,6 +31,9 @@ func AddUrls(app *fiber.App) {
 	admin.Post("/users/:id", AdminViewUserCrud).Name("users-post")
 	admin.Delete("/users/:id", AdminViewUserCrud).Name("users-delete")
 
+	// User Related Additional Details
+	admin.Get("/users/:id/share", UserShareLinkView).Name("users-share")
+
 	// Validate Admin
 	admin.Get("/whoami", AdminCheckWhoAmI).Name("admin-whoami")
 	admin.Post("/whoami", AdminCheckWhoAmI).Name("admin-whoami-check")

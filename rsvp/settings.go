@@ -8,6 +8,10 @@ import (
 	"time"
 )
 
+// GLOBAL "SETTINGS" variable
+// holds configured settings after app has intialized
+var SETTINGS Settings
+
 type Settings struct {
 	// STATIC FILES
 	STATIC_DIR            string

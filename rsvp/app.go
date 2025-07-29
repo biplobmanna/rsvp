@@ -9,8 +9,8 @@ import (
 
 // Separate function to initialize App, to modularize
 // and to test
-func InitApp(s Settings) *fiber.App {
-	engine := html.New(s.TEMPLATE_DIR, s.TEMPLATE_EXTENSION)
+func InitApp() *fiber.App {
+	engine := html.New(SETTINGS.TEMPLATE_DIR, SETTINGS.TEMPLATE_EXTENSION)
 
 	app := fiber.New(fiber.Config{
 		Views: engine,
@@ -21,8 +21,8 @@ func InitApp(s Settings) *fiber.App {
 
 func App() *fiber.App {
 	// Build Configuration Settings
-	s := Settings{}
-	s.BuildConf()
+	SETTINGS = Settings{}
+	SETTINGS.BuildConf()
 
 	// Migrate Refresh And connect DB
 	// Use when you want a fresh DB
@@ -35,10 +35,10 @@ func App() *fiber.App {
 	fmt.Println("  ⚫ DB:", DB.Name())
 
 	// Initialise the App
-	app := InitApp(s)
+	app := InitApp()
 
 	// Apply any custom s here, as needed
-	AddStatic(app, s)
+	AddStatic(app)
 
 	// Add the URLs
 	AddUrls(app)
@@ -47,13 +47,13 @@ func App() *fiber.App {
 	return app
 }
 
-func AddStatic(app *fiber.App, s Settings) {
-	app.Static(s.STATIC_URL, s.STATIC_DIR, fiber.Static{
-		Compress:      s.STATIC_COMPRESS,
-		ByteRange:     s.STATIC_BYTE_RANGE,
-		Browse:        s.STATIC_BROWSE,
-		Download:      s.STATIC_DOWNLOAD,
-		Index:         s.STATIC_INDEX,
-		CacheDuration: s.STATIC_CACHE_DURATION,
+func AddStatic(app *fiber.App) {
+	app.Static(SETTINGS.STATIC_URL, SETTINGS.STATIC_DIR, fiber.Static{
+		Compress:      SETTINGS.STATIC_COMPRESS,
+		ByteRange:     SETTINGS.STATIC_BYTE_RANGE,
+		Browse:        SETTINGS.STATIC_BROWSE,
+		Download:      SETTINGS.STATIC_DOWNLOAD,
+		Index:         SETTINGS.STATIC_INDEX,
+		CacheDuration: SETTINGS.STATIC_CACHE_DURATION,
 	})
 }

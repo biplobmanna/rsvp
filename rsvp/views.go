@@ -6,6 +6,37 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// ---- HELPER FUNCTIONS ----
+
+// extract token from query param or cookie | 
+// validate the token and return validation status | 
+// on successful validation, get the user as well
+// also return the struct with the token
+func extractTokenFromQueryOrCookieAndValidate(c *fiber.Ctx) (bool, WhoAmI, User) {
+	// flag to check if a token is valid
+	// this way, we don't have to check all validations
+	isTokenValid := false
+
+	// store the user
+	user := User{}
+
+	// extract token from Query, and validate
+	whoami := GetTokenQuery(c)
+	isTokenValid, user = whoami.ValidateTokenAndGetUser()
+	if isTokenValid {
+		// if token is valid, return
+		return isTokenValid, whoami, user
+	}
+
+	// parse the cookie if token from query-params is invalid
+	whoami = GetTokenCookie(c)
+	// check if token extracted from whoami is valid
+	isTokenValid, user = whoami.ValidateTokenAndGetUser()
+	return isTokenValid, whoami, user
+}
+
+// ----- VIEW FUNCTIONS -----
+
 // GET: Form to validate the token |
 // POST: Validate the token, and redirect to /card
 func WhoAmIView(c *fiber.Ctx) error {
@@ -30,7 +61,8 @@ func WhoAmIView(c *fiber.Ctx) error {
 			return c.Status(fiber.StatusBadRequest).Redirect("/whoami")
 		}
 		// check if token is valid, and take actions accordingly
-		if whoami.ValidateToken() {
+		isTokenValid, _ := whoami.ValidateTokenAndGetUser()
+		if isTokenValid {
 			// Set cookie with the token
 			SetTokenCookie(c, whoami.Token)
 			// redirect to the Card View
@@ -46,35 +78,12 @@ func WhoAmIView(c *fiber.Ctx) error {
 	return c.Redirect("/whoami")
 }
 
-// extract token from query param or cookie | 
-// validate the token and return validation status | 
-// also return the struct with the token
-func extractTokenFromQueryOrCookieAndValidate(c *fiber.Ctx) (bool, WhoAmI) {
-	// flag to check if a token is valid
-	// this way, we don't have to check all validations
-	isTokenValid := false
-
-	// extract token from Query, and validate
-	whoami := GetTokenQuery(c)
-	isTokenValid = whoami.ValidateToken()
-	if isTokenValid {
-		// if token is valid, return
-		return isTokenValid, whoami
-	}
-
-	// parse the cookie if token from query-params is invalid
-	whoami = GetTokenCookie(c)
-	// check if token extracted from whoami is valid
-	isTokenValid = whoami.ValidateToken()
-	return isTokenValid, whoami
-}
 
 // GET: Show the card upon successful validation
 func CardView(c *fiber.Ctx) error {
-	isTokenValid, whoami := extractTokenFromQueryOrCookieAndValidate(c)
+	isTokenValid, whoami, user := extractTokenFromQueryOrCookieAndValidate(c)
+	fmt.Println(user)
 	if isTokenValid {
-		user, _ := GetUserFromToken(whoami.Token)
-		fmt.Println(user)
 		// if token is valid, 
 		// set token in the Cookie
 		SetTokenCookie(c, whoami.Token)
@@ -82,6 +91,7 @@ func CardView(c *fiber.Ctx) error {
 		// return HTML template for teh RSVP card
 		return c.Render("card", fiber.Map{
 			"Title": "RSVP CARD",
+			"User": user,
 		}, "card-base")
 
 	} else {
@@ -93,7 +103,8 @@ func CardView(c *fiber.Ctx) error {
 // GET: RSVP action for the user
 // | return the HTML template with Card
 func RsvpView(c *fiber.Ctx) error {
-	isTokenValid, whoami := extractTokenFromQueryOrCookieAndValidate(c)
+	isTokenValid, whoami, user := extractTokenFromQueryOrCookieAndValidate(c)
+	fmt.Println(user)
 	if isTokenValid {
 		// if token is valid, 
 		// set token in the Cookie

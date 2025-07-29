@@ -8,6 +8,15 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// --- HELPER FUNCTIONS ---
+
+func extractTokenCookieAndValidateAdmin(c *fiber.Ctx) (bool, WhoAmI) {
+	whoami := GetTokenCookie(c)
+	return whoami.ValidateAdminToken(), whoami
+}
+
+// ---- ADMIN VIEWS ---
+
 // redirect any url caught here to /admin/whoami
 func RedirectToAdmin(c *fiber.Ctx) error {
 	// any URLs other than the ones specified redirects to .../whoami
@@ -17,8 +26,8 @@ func RedirectToAdmin(c *fiber.Ctx) error {
 // fetch the HTML template with the token submit form for GET
 // , and check the "token" for the POST request
 func AdminCheckWhoAmI(c *fiber.Ctx) error {
-	// for GET, render the HTML template for whoami
 	if c.Method() == "GET" {
+		// for GET, render the HTML template for whoami
 		return c.Render("whoami", fiber.Map{
 			"Title":          "RSVP: Admin",
 			"CheckWhoAmIUrl": "/admin/whoami",
@@ -27,41 +36,73 @@ func AdminCheckWhoAmI(c *fiber.Ctx) error {
 		// for POST, check the "token"
 		// and if valid, then update token
 
-		// extract token from cookie
-		whoami := GetTokenCookie(c)
+		// declare a WhoAmI struct to hold the token data
+		// fetched from the request
+		whoami := new(WhoAmI)
 
-		// if contains valid token, return "Token Validated"
-		// else, return error
-		if whoami.ValidateToken() {
-			return c.SendString("Token Validated")
+		// parse request body for the data in WhoAmI
+		if err := c.BodyParser(whoami); err != nil {
+			// if error in parsing, redirect back to the same page
+			// this should ensure that the input page is shown again
+			return c.Status(fiber.StatusUnauthorized).Redirect("/admin/whoami")
+		}
+		isTokenValid := whoami.ValidateAdminToken()
+		if isTokenValid {
+			// Set/Refresh cookie with the token
+			SetTokenCookie(c, whoami.Token)
+			return c.Redirect("/admin/users")
 		}
 
+		// return unauthorized if token is invalidated
+		return c.Status(fiber.StatusUnauthorized).Redirect("/admin/whoami")
 	}
+
 	// this part of the code should be unreachable
 	// even if reached due to some sort of mishap,
 	// return the StatusBadRequest
-	return c.SendStatus(fiber.StatusBadRequest)
+	return c.Status(fiber.StatusBadRequest).Redirect("/admin/whoami")
 }
 
 // return the HTML template with the complete of users
 // | no pagination yet, can be added later as an enhancement
 func AdminViewUsers(c *fiber.Ctx) error {
-	// create a array slice of Users struct
-	var results []User
-	// populate teh array slice with the list of all users
-	DB.Table("users").Find(&results)
+	isTokenValid, whoami := extractTokenCookieAndValidateAdmin(c)
 
-	// render the HTML template with all the users and return
-	return c.Render("users", fiber.Map{
-		"Title": "RSVP: Admin - Users",
-		"Users": results,
-	}, "base")
+	if isTokenValid {
+		// refresh cookie
+		SetTokenCookie(c, whoami.Token)
+
+		// create a array slice of Users struct
+		var results []User
+		// populate teh array slice with the list of all users
+		DB.Table("users").Find(&results)
+
+		// render the HTML template with all the users and return
+		return c.Render("users", fiber.Map{
+			"Title": "RSVP: Admin - Users",
+			"Users": results,
+		}, "base")
+	}
+
+	// redirect to /admin/whoami for invalidated token
+	return c.Status(fiber.StatusUnauthorized).Redirect("/admin/whoami")
 }
 
 // CRUD operations for Admin
 // | Naming is bad, to be fixed later
 // | handles both new, and existing users for GET
 func AdminViewUserCrud(c *fiber.Ctx) error {
+	// check for permissions before all operations
+	isTokenValid, whoami := extractTokenCookieAndValidateAdmin(c)
+	if isTokenValid {
+		// refresh cookie token
+		SetTokenCookie(c, whoami.Token)
+	} else {
+		// return unauthorized
+		return c.Status(fiber.StatusUnauthorized).Redirect("/admin/whoami")
+	}
+
+	// for a validated request, then perform the rest of the actions
 	// handle the GET request, for both new and existing users
 	if c.Method() == "GET" {
 		// the param which accepts either
@@ -167,4 +208,36 @@ func AdminViewUserCrud(c *fiber.Ctx) error {
 // not yet implemented
 func AdminView(c *fiber.Ctx) error {
 	return c.SendString("Admin View")
+}
+
+// get the user shareable link for the card page
+func UserShareLinkView(c *fiber.Ctx) error {
+	isTokenValid, _ := extractTokenCookieAndValidateAdmin(c)
+
+	if !isTokenValid {
+		return c.SendStatus(fiber.StatusUnauthorized)
+	} 
+
+	// get the user from the <id>
+	user := User{}
+
+	// extract <id> params, 
+	// defaults to -9999
+	// since id is PK, this should not exist
+	id := c.Params("id", "-9999")
+
+	// get user details from DB
+	result := DB.First(&user, id)
+
+	// if no result, and/or error
+	if result.Error != nil {
+		return c.SendStatus(fiber.StatusNotFound)
+	}
+
+	// if user is found, create a shareable URL for the user
+	cardUrl, _ := c.GetRouteURL("card", fiber.Map{})
+	url := c.BaseURL() + cardUrl + "/?t=" + user.Token[:32]
+	fmt.Println(url)
+
+	return c.SendString(url)
 }

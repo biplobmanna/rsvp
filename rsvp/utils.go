@@ -15,18 +15,33 @@ type WhoAmI struct {
 }
 
 // method: vaildate token
-func (w *WhoAmI) ValidateToken() bool {
+func (w *WhoAmI) ValidateTokenAndGetUser() (bool, User) {
+	// user data to return
+	user := User{}
+
 	// token must not be empty
-	if w.Token == "" {
-		return false
+	tokenLen := len(w.Token)
+	if tokenLen == 16 || tokenLen == 32 {
+		// do nothing
+	} else {
+		return false, user
 	}
 
-	// token must belong to exactly one user
-	_, err := GetUserFromToken(w.Token)
-	if err != nil {
-		return false
+	// partial find using "token"
+	token := w.Token + "%"
+	result := DB.Where("token like ?", token).First(&user)
+
+	if result.Error != nil {
+		return false, user
 	}
-	return true
+
+	// return true and user
+	return true, user
+}
+
+// method: validate admin token
+func (w *WhoAmI) ValidateAdminToken() bool {
+	return SETTINGS.ADMIN_TOKEN == w.Token
 }
 
 // set token to cookie
@@ -54,13 +69,3 @@ func GetTokenQuery(c *fiber.Ctx) WhoAmI {
 	return *whoami
 }
 
-// get non-admin user from token
-func GetUserFromToken(token string) (User, error) {
-	user := User{}
-	result := DB.Where("token = ?", token).First(&user)
-	if result.Error != nil {
-		return user, result.Error
-	}
-
-	return user, nil
-}
