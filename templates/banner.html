@@ -1,0 +1,122 @@
+<div
+  id="header-banner"
+  tabindex="-1"
+  class="fixed top-6 left-1/2 z-50 flex max-h-16 w-[calc(100%-2rem)] -translate-x-1/2 flex-row justify-between rounded-lg border border-gray-100 bg-white p-4 shadow-xs lg:max-w-7xl dark:border-gray-600 dark:bg-gray-700"
+>
+  <div class="me-4 mb-0 flex items-center">
+    <div
+      class="me-4 mb-0 flex items-center border-e border-gray-200 pe-4 dark:border-gray-600"
+    >
+      <img
+        class="hidden h-12 w-12 dark:block"
+        src="/static/img/logo-dark.svg"
+      />
+      <img class="h-12 w-12 dark:hidden" src="/static/img/logo-light.svg" />
+    </div>
+    <p
+      class="hidden text-sm font-normal text-gray-500 sm:block dark:text-gray-400"
+    >
+      Hi {{ .FullName }}, please join us for a small celebration
+    </p>
+  </div>
+  <div class="flex shrink-0 items-center space-x-2">
+    <button onclick="showMapsModal()" class="text-red-400 hover:text-red-500">
+      <svg
+        class="h-5 w-5"
+        fill="currentColor"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        viewBox="0 0 512 512"
+        xml:space="preserve"
+      >
+        <g>
+          <g>
+            <path
+              d="M256,0C154.739,0,72.348,82.386,72.348,183.652c0,70.241,18.514,94.635,169.771,320.929
+                            C245.217,509.217,250.424,512,256,512s10.782-2.783,13.881-7.418c151.251-226.216,169.771-251.423,169.771-320.929
+                            C439.652,82.386,357.261,0,256,0z M256,267.13c-46.032,0-83.478-37.446-83.478-83.478c0-46.032,37.446-83.478,83.478-83.478
+                            s83.478,37.446,83.478,83.478C339.478,229.684,302.032,267.13,256,267.13z"
+            />
+          </g>
+        </g>
+      </svg>
+    </button>
+    <button
+      onclick="showRsvpModal()"
+      type="button"
+      class="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-lg border border-gray-300 p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-800 dark:border-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+    >
+      RSVP
+    </button>
+    <button
+      onclick="dismissHeaderBanner()"
+      type="button"
+      class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
+    >
+      <svg
+        class="h-3 w-3"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 14 14"
+      >
+        <path
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+        />
+      </svg>
+      <span class="sr-only">Close banner</span>
+    </button>
+  </div>
+</div>
+<div
+  id="header-info"
+  class="fixed z-50 flex hidden w-[calc(100%-2rem)] justify-end p-4"
+>
+  <button
+    onclick="showHeaderBanner()"
+    class="h-fit w-fit rounded-full bg-gray-400 p-1 text-white hover:bg-gray-100 hover:text-gray-500 dark:bg-gray-100 dark:text-gray-500 dark:hover:bg-gray-400 dark:hover:text-white"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.7"
+      stroke="currentColor"
+      class="h-6 w-6 font-bold"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+      />
+    </svg>
+  </button>
+</div>
+
+<script>
+  const headerBanner = document.getElementById("header-banner");
+  const headerInfo = document.getElementById("header-info");
+
+  function dismissHeaderBanner() {
+    toggleHiddenDiv(headerBanner, false);
+    toggleHiddenDiv(headerInfo, true);
+  }
+
+  function showHeaderBanner() {
+    toggleHiddenDiv(headerBanner, true);
+    toggleHiddenDiv(headerInfo, false);
+  }
+
+  function toggleHiddenDiv(divElement, enable = true) {
+    if (enable) {
+      divElement.classList.remove("hidden");
+    } else {
+      divElement.classList.add("hidden");
+    }
+  }
+</script>

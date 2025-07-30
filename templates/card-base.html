@@ -1,21 +1,23 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/static/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/static/css/main.css" rel="stylesheet" />
+    <title>{{ .Title }}</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/x-icon" href="/static/favicon.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="/static/css/main.css" rel="stylesheet" />
-  <title>{{ .Title }}</title>
-</head>
-
-<body class="bg-white dark:bg-gray-800">
-  <!-- HEADER-->
-  {{ template "header" .User }}
-  <!-- EMBED CONTENT HERE -->
-  {{ embed }}
-  <!-- FOOTER -->
-  {{ template "footer" }}
-</body>
-
+  <body class="bg-white dark:bg-gray-800">
+    <!-- HEADER-->
+    {{ template "banner" .User }}
+    <!-- MAPS LINK SHARE -->
+    {{ template "maps-modal" }}
+    <!-- RSVP MODAL -->
+    {{ template "rsvp-modal" .User }}
+    <!-- EMBED CONTENT HERE -->
+    {{ template "card" }}
+    <!-- FOOTER -->
+    {{ template "footer" }}
+  </body>
 </html>

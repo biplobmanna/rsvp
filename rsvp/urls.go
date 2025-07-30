@@ -15,7 +15,7 @@ func AddUrls(app *fiber.App) {
 	// Card view for the validated users
 	app.Get("/card", CardView).Name("card")
 	// RSVP View for the validated users
-	app.Get("/rsvp", RsvpView).Name("rsvp")
+	app.Post("/rsvp", RsvpView).Name("rsvp")
 
 	// ****************************************************************
 	// URLs related to ADMIN

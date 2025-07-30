@@ -1,8 +1,6 @@
 package rsvp
 
 import (
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -82,7 +80,6 @@ func WhoAmIView(c *fiber.Ctx) error {
 // GET: Show the card upon successful validation
 func CardView(c *fiber.Ctx) error {
 	isTokenValid, whoami, user := extractTokenFromQueryOrCookieAndValidate(c)
-	fmt.Println(user)
 	if isTokenValid {
 		// if token is valid, 
 		// set token in the Cookie
@@ -104,16 +101,22 @@ func CardView(c *fiber.Ctx) error {
 // | return the HTML template with Card
 func RsvpView(c *fiber.Ctx) error {
 	isTokenValid, whoami, user := extractTokenFromQueryOrCookieAndValidate(c)
-	fmt.Println(user)
 	if isTokenValid {
 		// if token is valid, 
 		// set token in the Cookie
 		SetTokenCookie(c, whoami.Token)
 
-		return c.Render("rsvp", fiber.Map{
-			"Title": "RSVP",
-		}, "base")
-
+		rsvp := new(Rsvp)
+		if err := c.BodyParser(rsvp); err != nil {
+			return c.Status(fiber.StatusBadRequest).Redirect("/card")
+		}
+		// update the RSVP Status
+		user.Rsvp = rsvp.Rsvp
+		result := DB.Save(&user)
+		if result.Error != nil {
+			return c.Status(fiber.StatusBadRequest).Redirect("/card")
+		}
+		return c.Redirect("/card")
 	} else {
 		// in case of invalid token, redirect to the token form page
 		return c.Redirect("/whoami")

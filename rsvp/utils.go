@@ -11,6 +11,11 @@ type WhoAmI struct {
 	Token string `json:"token" xml:"token" form:"token" cookie:"token"`
 }
 
+// struct to hold the rsvp details
+type Rsvp struct {
+	Rsvp bool `json:"rsvp" xml:"rsvp" form:"rsvp" cookie:"rsvp"`
+}
+
 // method: vaildate token
 func (w *WhoAmI) ValidateTokenAndGetUser() (bool, User) {
 	// user data to return

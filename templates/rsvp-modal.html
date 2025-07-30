@@ -1,0 +1,113 @@
+<dialog
+  id="rsvp-modal"
+  tabindex="-1"
+  class="h-screen w-screen overflow-auto bg-transparent md:overflow-hidden"
+>
+  <div
+    class="md:flex md:h-full md:max-h-2/3 md:w-screen md:items-center md:justify-center"
+  >
+    <div class="max-h-full w-fit max-w-2xl p-4">
+      <!-- Modal content -->
+      <div class="rounded-lg bg-white shadow-sm dark:bg-gray-700">
+        <!-- Modal header -->
+        <div
+          class="flex items-center justify-between rounded-t border-b border-gray-200 p-4 md:p-5 dark:border-gray-600"
+        >
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+            RSVP to the Event
+          </h3>
+          <button
+            type="button"
+            class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
+            onclick="closeRsvpModal()"
+          >
+            <svg
+              class="h-3 w-3"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 14 14"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+              />
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+        <!-- Modal body -->
+        <div class="space-y-4 p-4 md:p-5">
+          <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+            Dear {{ .FullName }}, <br /><br />
+            We are delighted to invite you to join us for the marriage registry
+            ceremony of Abanti and Biplob as we begin our journey together!
+            <br />
+          </p>
+          <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+            Please reply to this message or call us to let us know if you’ll be
+            able to share this special moment with us, along with the number of
+            guests attending. <br /><br />
+            Kindly confirm your attendance by 5th August. <br /><br />
+            We look forward to celebrating this milestone with you! <br /><br />
+            Warm regards,<br />
+            Abanti & Biplob
+          </p>
+        </div>
+        <!-- Previous RSVP Status -->
+        {{ if .Rsvp }}
+        <div
+          class="flex items-center rounded-b border-t border-gray-200 p-4 md:p-5 dark:border-gray-600"
+        >
+          <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+            You've previously confirmed.
+          </p>
+        </div>
+        {{ end }}
+        <!-- Modal footer -->
+        <div
+          class="flex items-center rounded-b border-t border-gray-200 p-4 md:p-5 dark:border-gray-600"
+        >
+          <button
+            type="button"
+            class="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            onclick="submitRsvp(true)"
+          >
+            I'd be delighted
+          </button>
+          <button
+            type="button"
+            class="ms-3 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+            onclick="submitRsvp(false)"
+          >
+            Sorry, I can't make it
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  function showRsvpModal() {
+    document.getElementById("rsvp-modal").showModal();
+  }
+  function closeRsvpModal() {
+    document.getElementById("rsvp-modal").close();
+  }
+  async function submitRsvp(status) {
+    await fetch("/rsvp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        rsvp: status,
+      }),
+    });
+    window.location.reload();
+  }
+</script>

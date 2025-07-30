@@ -1,3 +1,51 @@
-<div class="flex justify-center">
-    <img class="h-screen max-h-screen" src="/static/img/invitation3.svg" alt="invitation card">
+<div class="h-screen w-screen overflow-auto">
+  <div id="image-card-container" class="flex justify-center">
+    <img
+      id="image-card"
+      class="h-full w-full transform object-contain transition-transform duration-200"
+      src="/static/img/invitation3.svg"
+      alt="invitation card"
+    />
+  </div>
 </div>
+
+<script>
+  const image = document.getElementById("image-card");
+  const container = document.getElementById("image-card-container");
+  let scale = 1;
+  const minScale = 0.5;
+  const maxScale = 3;
+
+  // Handle mouse wheel zoom
+  container.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    scale = Math.min(Math.max(scale + delta, minScale), maxScale);
+    image.style.transform = `scale(${scale})`;
+  });
+
+  // Handle touch pinch zoom
+  let initialDistance = 0;
+  container.addEventListener("touchstart", (e) => {
+    if (e.touches.length === 2) {
+      initialDistance = Math.hypot(
+        e.touches[0].pageX - e.touches[1].pageX,
+        e.touches[0].pageY - e.touches[1].pageY,
+      );
+    }
+  });
+
+  container.addEventListener("touchmove", (e) => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const currentDistance = Math.hypot(
+        e.touches[0].pageX - e.touches[1].pageX,
+        e.touches[0].pageY - e.touches[1].pageY,
+      );
+      const scaleChange = currentDistance / initialDistance;
+      scale = Math.min(Math.max(scale * scaleChange, minScale), maxScale);
+      image.style.transform = `scale(${scale})`;
+      initialDistance = currentDistance;
+    }
+  });
+</script>
