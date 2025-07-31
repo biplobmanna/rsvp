@@ -24,14 +24,19 @@ func App() *fiber.App {
 	SETTINGS = Settings{}
 	SETTINGS.BuildConf()
 
-	// Migrate Refresh And connect DB
-	// Use when you want a fresh DB
-	// DB := MigrateRefreshAndConnectDB()
-	// SeedAdmin(SETTINGS, DB)
-	// seedUser(SETTINGS, DB)
+	// check if DB has previously existed
+	isDBExist := CheckDBExists(DATABASE_NAME)
 
-	// Use for normal situations
-	DB := ConnectDB()
+	if isDBExist {
+		// Use for normal situations
+		DB = ConnectDB()
+	} else {
+		// Migrate Refresh And connect DB
+		DB = MigrateRefreshAndConnectDB()
+		// Use when you want a fresh DB
+		// SeedAdmin(SETTINGS, DB)
+		// seedUser(SETTINGS, DB)
+	}
 	fmt.Println("  ⚫ DB:", DB.Name())
 
 	// Initialise the App

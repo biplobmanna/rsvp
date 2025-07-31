@@ -2,7 +2,6 @@ package rsvp
 
 import (
 	"time"
-
 	"github.com/gofiber/fiber/v2"
 )
 

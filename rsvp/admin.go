@@ -11,6 +11,7 @@ import (
 // --- HELPER FUNCTIONS ---
 
 func extractTokenCookieAndValidateAdmin(c *fiber.Ctx) (bool, WhoAmI) {
+	fmt.Println(c.Cookies("token"))
 	whoami := GetTokenCookie(c)
 	return whoami.ValidateAdminToken(), whoami
 }

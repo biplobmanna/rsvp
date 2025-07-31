@@ -40,3 +40,9 @@ func DestroyDB() {
 		fmt.Println("🔴 Deleting ", DATABASE_NAME, "...")
 	}
 }
+
+// check if the DB file exists
+func CheckDBExists(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil || !os.IsNotExist(err)
+}
