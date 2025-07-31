@@ -1,18 +1,17 @@
 package rsvp
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
-
 	"github.com/gofiber/fiber/v2"
 )
 
 // --- HELPER FUNCTIONS ---
 
 func extractTokenCookieAndValidateAdmin(c *fiber.Ctx) (bool, WhoAmI) {
-	fmt.Println(c.Cookies("token"))
+	LOG.Println("extract token from cookie and validate admin...")
 	whoami := GetTokenCookie(c)
+	LOG.Println("TOKEN:", whoami.Token)
 	return whoami.ValidateAdminToken(), whoami
 }
 
@@ -20,72 +19,76 @@ func extractTokenCookieAndValidateAdmin(c *fiber.Ctx) (bool, WhoAmI) {
 
 // redirect any url caught here to /admin/whoami
 func RedirectToAdmin(c *fiber.Ctx) error {
-	// any URLs other than the ones specified redirects to .../whoami
+	LOG.Println("[", c.Method(), "]","URL:", c.OriginalURL(), "| View: RedirectToAdmin")
+	LOG.Println("Redirecting URL:", c.OriginalURL(), "to /admin/whoami...")
 	return c.Redirect("/admin/whoami")
 }
 
 // fetch the HTML template with the token submit form for GET
 // , and check the "token" for the POST request
 func AdminCheckWhoAmI(c *fiber.Ctx) error {
+	LOG.Println("[", c.Method(), "]","URL:", c.OriginalURL(), "| View: AdminCheckWhoAmI")
 	if c.Method() == "GET" {
-		// for GET, render the HTML template for whoami
+		LOG.Println("Render the template for WhoAmI for Admin...")
 		return c.Render("whoami", fiber.Map{
 			"Title":          "RSVP: Admin",
 			"CheckWhoAmIUrl": "/admin/whoami",
 		}, "base")
 	} else if c.Method() == "POST" {
-		// for POST, check the "token"
-		// and if valid, then update token
-
-		// declare a WhoAmI struct to hold the token data
-		// fetched from the request
 		whoami := new(WhoAmI)
 
-		// parse request body for the data in WhoAmI
+		LOG.Println("Parsing the request body for Token...")
 		if err := c.BodyParser(whoami); err != nil {
-			// if error in parsing, redirect back to the same page
-			// this should ensure that the input page is shown again
+			LOG.Println("Failed to parse the request body for Token...")
 			return c.Status(fiber.StatusUnauthorized).Redirect("/admin/whoami")
 		}
+		LOG.Println("Check if the Token is valid...")
 		isTokenValid := whoami.ValidateAdminToken()
 		if isTokenValid {
-			// Set/Refresh cookie with the token
+			LOG.Println("The token is valid, set the token in cookie...")
 			SetTokenCookie(c, whoami.Token)
+			LOG.Println("Redirecting to /admin/users with the cookie...")
 			return c.Redirect("/admin/users")
 		}
 
-		// return unauthorized if token is invalidated
+		LOG.Println("Token is INVALID!")
+		LOG.Println("Redirecting to /admin/users with Unauthorized status...")
 		return c.Status(fiber.StatusUnauthorized).Redirect("/admin/whoami")
 	}
 
-	// this part of the code should be unreachable
-	// even if reached due to some sort of mishap,
-	// return the StatusBadRequest
+	LOG.Panicln("Unreachable Path, check immediately...")
 	return c.Status(fiber.StatusBadRequest).Redirect("/admin/whoami")
 }
 
 // return the HTML template with the complete of users
 // | no pagination yet, can be added later as an enhancement
 func AdminViewUsers(c *fiber.Ctx) error {
+	LOG.Println("[", c.Method(), "]","URL:", c.OriginalURL(), "| View: AdminViewUsers")
+	LOG.Println("Extract the Token from Cookie, and validate the Admin correctly...")
 	isTokenValid, whoami := extractTokenCookieAndValidateAdmin(c)
 
 	if isTokenValid {
-		// refresh cookie
+		LOG.Println("The Token is valid, setting it back to the Cookie...")
 		SetTokenCookie(c, whoami.Token)
 
-		// create a array slice of Users struct
 		var results []User
-		// populate teh array slice with the list of all users
-		DB.Table("users").Find(&results)
+		result := DB.Table("users").Find(&results)
+		LOG.Println("Fetching all Users from the DB...")
 
-		// render the HTML template with all the users and return
+		if result.Error != nil {
+			LOG.Println("Failed to Fetch Users from DB, Error:", result.Error)
+			LOG.Println("The list of results are empty...")
+		}
+
+		LOG.Println("Rendering the Admin-Users page with a list of all Users...")
 		return c.Render("users", fiber.Map{
 			"Title": "RSVP: Admin - Users",
 			"Users": results,
 		}, "base")
 	}
 
-	// redirect to /admin/whoami for invalidated token
+	LOG.Println("Token is INVALID!")
+	LOG.Println("Redirecting back to /admin/whoami with Status: Unauthorized...")
 	return c.Status(fiber.StatusUnauthorized).Redirect("/admin/whoami")
 }
 
@@ -93,61 +96,49 @@ func AdminViewUsers(c *fiber.Ctx) error {
 // | Naming is bad, to be fixed later
 // | handles both new, and existing users for GET
 func AdminViewUserCrud(c *fiber.Ctx) error {
-	// check for permissions before all operations
+	LOG.Println("[", c.Method(), "]","URL:", c.OriginalURL(), "| View: AdminViewUserCrud")
+	LOG.Println("Extract the Token from Cookie, and validate the Admin correctly...")
 	isTokenValid, whoami := extractTokenCookieAndValidateAdmin(c)
 	if isTokenValid {
-		// refresh cookie token
+		LOG.Println("The Token is valid, setting it back to the Cookie...")
 		SetTokenCookie(c, whoami.Token)
 	} else {
-		// return unauthorized
+		LOG.Println("Token is INVALID!")
+		LOG.Println("Redirecting back to /admin/whoami with Status: Unauthorized...")
 		return c.Status(fiber.StatusUnauthorized).Redirect("/admin/whoami")
 	}
 
-	// for a validated request, then perform the rest of the actions
-	// handle the GET request, for both new and existing users
 	if c.Method() == "GET" {
-		// the param which accepts either
-		// "new" or "<id>"
+		LOG.Println("Extracting Param:<id> from the Request:URL...")
 		param := c.Params("id")
 
-		// User struct to store the new/existing user data
 		var user User
-		// flag to mark new user addition or existing user update
-		// this flag is user in HTML template to populate or leave
-		// the input fields empty
 		var update bool
 
-		// try to conver the <id> param into int
+		LOG.Println("Coverting Param:<id> from string to int...")
 		id, err := strconv.Atoi(param)
 
 		if param == "new" {
-			// if the param is new, the request is for
-			// adding a new user, which is empty
+			LOG.Println("Param=new - this relates to adding of a new user, unmark 'update' flag...")
 			user = User{}
-			// mark flag for new user addition instead of update
 			update = false
 		} else if err == nil {
-			// if err is nil, means that atoi() is successful
-			// which means that <id> is an integer
-			// which related to the PK in Users table in DB
-
-			// fetch data from DB
+			LOG.Println("Param:<id> is a valid integer, and not 'new'...")
+			LOG.Println("Finding the User with <id> from the DB...")
 			queryResult := DB.Table("users").First(&user, id)
 			if queryResult.Error != nil {
-				// if the <id> doesn't belong to any Users<PK>
-				// the user does not exist, so send similar status
+				LOG.Println("User with id=", id, "not found in DB...")
+				LOG.Println("Sending back a Status: NotFound")
 				return c.SendStatus(fiber.StatusNotFound)
 			}
-			// mark flag to denote user exists, and updation operation
+			LOG.Println("User details found in DB, mark 'update' flag...")
 			update = true
 		} else {
-			// this block is a wrong flow,
-			// so StatusNotFound
+			LOG.Println("Wrong URL, return Status: NotFound")
 			return c.SendStatus(fiber.StatusNotFound)
 		}
 
-		// render the HTML with the user details if present
-		// , or with empty fields for new users
+		LOG.Println("Render the User Page for adding/updating user...")
 		return c.Render("user", fiber.Map{
 			"Title":  "Rsvp: Admin - Edit User",
 			"Update": update,
@@ -155,96 +146,81 @@ func AdminViewUserCrud(c *fiber.Ctx) error {
 		}, "base")
 
 	} else if c.Method() == "POST" {
-		// handle the POST request which also captures both:
-		// user creation and user update
-
-		// new User struct to store the parsed User data from request
+		LOG.Println("Parsing the body for User data...")
 		user := User{}
-		// parse the body for the User data
 		if err := c.BodyParser(&user); err != nil {
-			// if parsing fails for any reason, 
-			// return StatusExpectationFailed
+			LOG.Println("Failed to parse body for User data...")
 			c.SendStatus(fiber.StatusExpectationFailed)
 		}
-		// trim the space from users comments
+		LOG.Println("User data parsed successfully...")
+		LOG.Println("Trimming all space in Comments...")
 		user.Comments = strings.TrimSpace(user.Comments)
+		LOG.Println("Generating Token for User...")
 		token, err := EncryptAES(user.FullName+SETTINGS.ADMIN_TOKEN)
 		if err != nil {
+			LOG.Println("Failed to generate Token for User...")
 			c.SendStatus(fiber.StatusExpectationFailed)
 		}
 		user.Token = token
+		LOG.Println("Token geneated successfully...")
 
-
-		// update the DB
-		// if the user is a new user, the "id" is NIL,
-		// and will be auto-generated when creating the row
-		// for update, the "id" is the PK identifying a row
+		LOG.Println("Saving User data to DB...")
 		result := DB.Save(&user)
 		if result.Error != nil {
-			// if somehow the DB update fails, then return StatusExpectationFailed
+			LOG.Println("Failed to save User data to DB...")
 			c.SendStatus(fiber.StatusExpectationFailed)
 		}
-		fmt.Printf("✅ User {ID: %d} updated...\n", user.ID)
+		LOG.Printf("✅ User {ID: %d} updated...\n", user.ID)
 
-		// once user is added, redirect to view the list of all users
+		LOG.Println("Redirect back to /admin/users after successfully saving User...")
 		return c.Redirect("/admin/users")
 
 	} else if c.Method() == "DELETE" {
-		// handle the DELETE request
-
-		// get the <id> from request
+		LOG.Println("Extracting Param:<id> from the Request:URL...")
 		id := c.Params("id")
 
-		// will be used to point to the correct table in DB
 		var user User
-		// try to delete the user identified by the <id>
 		queryResult := DB.Delete(&user, id)
+		LOG.Println("Deleting User from the DB...")
 
 		if queryResult.Error != nil {
-			// if failure to delete, then return StatusExpectationFailed
+			LOG.Println("Failed to delete User from DB, return Status: ExpectationFailed")
 			return c.SendStatus(fiber.StatusExpectationFailed)
 		}
-		// this part is reached for successful deletion of resource
+		LOG.Println("Deleted Successfully...")
 		return c.SendStatus(fiber.StatusNoContent)
 	}
-	// this code should not be reachable, so returns a StatusBadRequest
+	LOG.Panicln("Unreachable Block, Debug Immediately...")
 	return c.SendStatus(fiber.StatusBadRequest)
-}
-
-// TODO: to return Admin HTML template in future,
-// not yet implemented
-func AdminView(c *fiber.Ctx) error {
-	return c.SendString("Admin View")
 }
 
 // get the user shareable link for the card page
 func UserShareLinkView(c *fiber.Ctx) error {
+	LOG.Println("[", c.Method(), "]","URL:", c.OriginalURL(), "| View: UserShareLinkView")
+	LOG.Println("Extract the Token from Cookie, and validate the Admin correctly...")
 	isTokenValid, _ := extractTokenCookieAndValidateAdmin(c)
 
 	if !isTokenValid {
+		LOG.Println("Token is INVALID, return Status: Unauthorized")
 		return c.SendStatus(fiber.StatusUnauthorized)
 	} 
 
-	// get the user from the <id>
 	user := User{}
-
-	// extract <id> params, 
-	// defaults to -9999
-	// since id is PK, this should not exist
 	id := c.Params("id", "-9999")
+	LOG.Println("Extracting Param:<id> from the Request:URL...")
 
-	// get user details from DB
+	LOG.Println("Fetching User details from DB...")
 	result := DB.First(&user, id)
 
-	// if no result, and/or error
 	if result.Error != nil {
+		LOG.Println("Failed to fetch user details from DB...")
 		return c.SendStatus(fiber.StatusNotFound)
 	}
 
-	// if user is found, create a shareable URL for the user
+	LOG.Println("Generating a Shareable URL...")
 	cardUrl, _ := c.GetRouteURL("card", fiber.Map{})
 	url := c.BaseURL() + cardUrl + "/?t=" + user.Token[:32]
-	fmt.Println(url)
 
+	LOG.Println("Shareable URL:", url)
 	return c.SendString(url)
 }

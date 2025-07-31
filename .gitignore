@@ -19,3 +19,6 @@ node_modules/
 
 # deploy.sh
 deploy.sh
+
+# ignore log files
+*.log

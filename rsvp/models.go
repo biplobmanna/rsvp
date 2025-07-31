@@ -1,7 +1,6 @@
 package rsvp
 
 import (
-	// "gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 

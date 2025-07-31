@@ -1,8 +1,6 @@
 package rsvp
 
 import (
-	"fmt"
-	"log"
 	"os"
 
 	"gorm.io/driver/sqlite"
@@ -17,32 +15,29 @@ const DATABASE_NAME = "rsvp.db"
 var DB *gorm.DB
 
 func ConnectDB() *gorm.DB {
-	fmt.Println("⚫ Connecting to database...")
+	LOG.Println("⚫ Connecting to database...")
 	var err error
-	// using the same global variable as above
-	// to make it accessible across all func
-	// in the same package
 	DB, err = gorm.Open(sqlite.Open(DATABASE_NAME), &gorm.Config{})
 	if err != nil {
-		fmt.Println("  ⚫ Failed to connect ❌")
-		log.Fatal(err)
+		LOG.Panicln("  ⚫ Failed to connect to DB... ❌")
 	}
-
-	fmt.Println("  ⚫ Connected OK ✔️")
+	LOG.Println("  ⚫ DB Connected OK ✔️")
 	return DB
 }
 
 func DestroyDB() {
+	LOG.Println("Trying to remove Database:", DATABASE_NAME, "...")
 	err := os.Remove(DATABASE_NAME)
 	if err != nil {
-		log.Fatal(err)
+		LOG.Panicln("Failed to remove DB...", err)
 	} else {
-		fmt.Println("🔴 Deleting ", DATABASE_NAME, "...")
+		LOG.Println("🔴 Deleting ", DATABASE_NAME, "...")
 	}
 }
 
 // check if the DB file exists
 func CheckDBExists(path string) bool {
+	LOG.Println("Checking if File", path, "Exist...")
 	_, err := os.Stat(path)
 	return err == nil || !os.IsNotExist(err)
 }

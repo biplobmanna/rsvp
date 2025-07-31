@@ -1,9 +1,6 @@
 package rsvp
 
 import (
-	"fmt"
-	"log"
-
 	"github.com/jaswdr/faker/v2"
 	"gorm.io/gorm"
 )
@@ -12,13 +9,15 @@ import (
 var SEEDERS = 100
 
 func seedUser(db *gorm.DB) {
+	LOG.Println("Seeding User...")
 	fake := faker.New()
 	errors, rowsAffected := 0, 0
+	LOG.Println("Generating", SEEDERS, "seeds for Users...")
 	for i := range SEEDERS {
 		username := fake.Internet().User()
 		token, err := EncryptAES(username+SETTINGS.ADMIN_TOKEN)
 		if err != nil {
-			log.Fatal(err)
+			LOG.Fatal(err)
 		}
 
 		user := User{
@@ -37,7 +36,6 @@ func seedUser(db *gorm.DB) {
 			rowsAffected += 1
 		}
 	}
-	fmt.Println("🔵 Seeding User:")
-	fmt.Println("  🔵 Rows Affected: ", rowsAffected)
-	fmt.Println("  🔵 Errors While Seeding: ", errors)
+	LOG.Println("  🔵 Rows Affected: ", rowsAffected)
+	LOG.Println("  🔵 Errors While Seeding: ", errors)
 }
