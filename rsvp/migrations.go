@@ -5,11 +5,7 @@ import (
 )
 
 func Migrate[M Model](db *gorm.DB, m *M, desc ...string) {
-	// printDesc := "database table..."
-	// if len(desc) > 0 {
-	// 	printDesc = desc[0]
-	// }
-	//LOG.Println("  🟣 Migrating ", printDesc)
+	//LOG.Println("  🟣 Migrating Table(s)...")
 	db.AutoMigrate(&m)
 }
 
