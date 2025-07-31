@@ -2,7 +2,7 @@ package rsvp
 
 import (
 	"fmt"
-
+	"os"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html/v2"
 )
@@ -31,6 +31,9 @@ func App() *fiber.App {
 		// Use for normal situations
 		DB = ConnectDB()
 	} else {
+		// create the DB file since it does not exist
+		file, _ := os.Create(DATABASE_NAME)
+		defer file.Close()
 		// Migrate Refresh And connect DB
 		DB = MigrateRefreshAndConnectDB()
 		// Use when you want a fresh DB
