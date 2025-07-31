@@ -23,32 +23,32 @@ func (w *WhoAmI) ValidateTokenAndGetUser() (bool, User) {
 	if tokenLen == 16 || tokenLen == 32 {
 		// do nothing
 	} else {
-		LOG.Println("Token is of incorrent length:", tokenLen, "...")
+		//LOG.Println("Token is of incorrent length:", tokenLen, "...")
 		return false, user
 	}
 
-	LOG.Println("Fetching User details using the Token...")
+	//LOG.Println("Fetching User details using the Token...")
 	token := w.Token + "%"
 	result := DB.Where("token like ?", token).First(&user)
 
 	if result.Error != nil {
-		LOG.Println("No Users found with the Token, i.e., Token is Invalid...")
+		//LOG.Println("No Users found with the Token, i.e., Token is Invalid...")
 		return false, user
 	}
 
-	LOG.Println("User Found, Token Valid...")
+	//LOG.Println("User Found, Token Valid...")
 	return true, user
 }
 
 // method: validate admin token
 func (w *WhoAmI) ValidateAdminToken() bool {
-	LOG.Println("Validating Admin Token...")
+	//LOG.Println("Validating Admin Token...")
 	return SETTINGS.ADMIN_TOKEN == w.Token
 }
 
 // set token to cookie
 func SetTokenCookie(c *fiber.Ctx, token string) {
-	LOG.Println("Setting the Token into Cookie...")
+	//LOG.Println("Setting the Token into Cookie...")
 	cookie := new(fiber.Cookie)
 	cookie.Name = "token"
 	cookie.Value = token
@@ -60,7 +60,7 @@ func SetTokenCookie(c *fiber.Ctx, token string) {
 
 // get token from cookie
 func GetTokenCookie(c *fiber.Ctx) WhoAmI {
-	LOG.Println("Extracting Token from Cookie...")
+	//LOG.Println("Extracting Token from Cookie...")
 	whoami := new(WhoAmI)
 	c.CookieParser(whoami) // ignoring error handling
 	return *whoami
@@ -68,7 +68,7 @@ func GetTokenCookie(c *fiber.Ctx) WhoAmI {
 
 // get token from query params
 func GetTokenQuery(c *fiber.Ctx) WhoAmI {
-	LOG.Println("Extracting Token from Query Params...")
+	//LOG.Println("Extracting Token from Query Params...")
 	whoami := new(WhoAmI) 
 	whoami.Token = c.Query("t", "")
 	return *whoami

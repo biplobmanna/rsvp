@@ -9,10 +9,10 @@ import (
 // Separate function to initialize App, to modularize
 // and to test
 func InitApp() *fiber.App {
-	LOG.Println("Setting the HTML Template Engine...")
+	//LOG.Println("Setting the HTML Template Engine...")
 	engine := html.New(SETTINGS.TEMPLATE_DIR, SETTINGS.TEMPLATE_EXTENSION)
 
-	LOG.Println("Initialising a Fiber Application...")
+	//LOG.Println("Initialising a Fiber Application...")
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
@@ -24,26 +24,26 @@ func App() *fiber.App {
 	SETTINGS = Settings{}
 	SETTINGS.BuildConf()
 
-	// Setting up LOGGING
+	// Setting up //LOG.ING
 	SetupLogging()
 
-	LOG.Println("Setup of Settings and Logging Complete...")
-	LOG.Printf("Checking if DATABSE:%s exists...\n", DATABASE_NAME)
+	//LOG.Println("Setup of Settings and Logging Complete...")
+	//LOG.Printf("Checking if DATABSE:%s exists...\n", DATABASE_NAME)
 	isDBExist := CheckDBExists(DATABASE_NAME)
 
 	if isDBExist {
-		LOG.Println("DB Exists, connecting...")
+		//LOG.Println("DB Exists, connecting...")
 		DB = ConnectDB()
 	} else {
-		LOG.Println("DB does not exist, creating...")
+		//LOG.Println("DB does not exist, creating...")
 		file, err := os.Create(DATABASE_NAME)
 		if err != nil {
-			LOG.Panicln("Failed to create DB, Exiting...")
+			//LOG.Panicln("Failed to create DB, Exiting...")
 		}
 		defer file.Close()
 
-		LOG.Println("DB Created, connecting...")
-		LOG.Println("Migrating the Tables...")
+		//LOG.Println("DB Created, connecting...")
+		//LOG.Println("Migrating the Tables...")
 		DB = MigrateRefreshAndConnectDB()
 
 		// Use when you want a fresh DB, and seeded for testing
@@ -51,13 +51,13 @@ func App() *fiber.App {
 		// seedUser(DB)
 	}
 
-	LOG.Println("Initialising Application...")
+	//LOG.Println("Initialising Application...")
 	app := InitApp()
 
-	LOG.Println("Adding Static Settings...")
+	//LOG.Println("Adding Static Settings...")
 	AddStatic(app)
 
-	LOG.Println("Addding the URLs...")
+	//LOG.Println("Addding the URLs...")
 	AddUrls(app)
 
 	return app

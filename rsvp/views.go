@@ -16,18 +16,18 @@ func extractTokenFromQueryOrCookieAndValidate(c *fiber.Ctx) (bool, WhoAmI, User)
 	isTokenValid := false
 	user := User{}
 
-	LOG.Println("Check the URL QueryParams for Valid Token...")
+	//LOG.Println("Check the URL QueryParams for Valid Token...")
 	whoami := GetTokenQuery(c)
 	isTokenValid, user = whoami.ValidateTokenAndGetUser()
 	if isTokenValid {
-		LOG.Println("URL QueryParams Token is valid...")
+		//LOG.Println("URL QueryParams Token is valid...")
 		return isTokenValid, whoami, user
 	}
 
-	LOG.Println("URL QueryParams Token is Invalid, or not present...")
-	LOG.Println("Check the Token in Cookie...")
+	//LOG.Println("URL QueryParams Token is Invalid, or not present...")
+	//LOG.Println("Check the Token in Cookie...")
 	whoami = GetTokenCookie(c)
-	LOG.Println("Checking if Token is valid, and also getting User...")
+	//LOG.Println("Checking if Token is valid, and also getting User...")
 	isTokenValid, user = whoami.ValidateTokenAndGetUser()
 	return isTokenValid, whoami, user
 }
@@ -37,30 +37,30 @@ func extractTokenFromQueryOrCookieAndValidate(c *fiber.Ctx) (bool, WhoAmI, User)
 // GET: Form to validate the token |
 // POST: Validate the token, and redirect to /card
 func WhoAmIView(c *fiber.Ctx) error {
-	LOG.Println("[", c.Method(), "]","URL:", c.OriginalURL(), "| View: WhoAmIView")
+	//LOG.Println("[", c.Method(), "]","URL:", c.OriginalURL(), "| View: WhoAmIView")
 	if c.Method() == "GET" {
-		LOG.Println("Render and return the WhoAmI Page for User...")
+		//LOG.Println("Render and return the WhoAmI Page for User...")
 		return c.Render("whoami", fiber.Map{
 			"Title": "RSVP",
 		}, "base")
 
 	} else if c.Method() == "POST" {
 		whoami := new(WhoAmI)
-		LOG.Println("Parsing the request body for Token...")
+		//LOG.Println("Parsing the request body for Token...")
 		if err := c.BodyParser(whoami); err != nil {
-			LOG.Println("Failed to parse the request body for Token...")
+			//LOG.Println("Failed to parse the request body for Token...")
 			return c.Status(fiber.StatusUnauthorized).Redirect("/whoami")
 		}
-		LOG.Println("Validating Token...")
+		//LOG.Println("Validating Token...")
 		isTokenValid, _ := whoami.ValidateTokenAndGetUser()
 		if isTokenValid {
-			LOG.Println("Token is valid, setting it into Cookie...")
+			//LOG.Println("Token is valid, setting it into Cookie...")
 			SetTokenCookie(c, whoami.Token)
-			LOG.Println("Redirect to CARD Page...")
+			//LOG.Println("Redirect to CARD Page...")
 			return c.Redirect("/card")
 
 		} else {
-			LOG.Println("Token INVALID, Redirect back to /whoami Page")
+			//LOG.Println("Token INVALID, Redirect back to /whoami Page")
 			return c.Status(fiber.StatusUnauthorized).Redirect("/whoami")
 		}
 	}
@@ -71,19 +71,19 @@ func WhoAmIView(c *fiber.Ctx) error {
 
 // GET: Show the card upon successful validation
 func CardView(c *fiber.Ctx) error {
-	LOG.Println("[", c.Method(), "]","URL:", c.OriginalURL(), "| View: CardView")
-	LOG.Println("Extract Token from QueryParams or Cookie...")
+	//LOG.Println("[", c.Method(), "]","URL:", c.OriginalURL(), "| View: CardView")
+	//LOG.Println("Extract Token from QueryParams or Cookie...")
 	isTokenValid, whoami, user := extractTokenFromQueryOrCookieAndValidate(c)
 	if isTokenValid {
-		LOG.Println("Token is valid, setting it in Cookie...")
+		//LOG.Println("Token is valid, setting it in Cookie...")
 		SetTokenCookie(c, whoami.Token)
 
-		LOG.Println("Generating a shareable URL for User...")
+		//LOG.Println("Generating a shareable URL for User...")
 		cardUrl, _ := c.GetRouteURL("card", fiber.Map{})
 		cardUrl = c.BaseURL() + cardUrl + "/?t=" + user.Token[:32]
 		imageUrl := c.BaseURL() + "/static/img/logo-light.svg"
 
-		LOG.Println("Render and return CARD page with all data...")
+		//LOG.Println("Render and return CARD page with all data...")
 		return c.Render("card", fiber.Map{
 			"Title": "RSVP CARD",
 			"User": user,
@@ -92,7 +92,7 @@ func CardView(c *fiber.Ctx) error {
 		}, "card-base")
 
 	} else {
-		LOG.Println("Token INVALID, Redirect back to /whoami Page")
+		//LOG.Println("Token INVALID, Redirect back to /whoami Page")
 		return c.Status(fiber.StatusUnauthorized).Redirect("/whoami")
 	}
 }
@@ -100,30 +100,30 @@ func CardView(c *fiber.Ctx) error {
 // GET: RSVP action for the user
 // | return the HTML template with Card
 func RsvpView(c *fiber.Ctx) error {
-	LOG.Println("[", c.Method(), "]","URL:", c.OriginalURL(), "| View: RsvpView")
-	LOG.Println("Extract Token from QueryParams or Cookie...")
+	//LOG.Println("[", c.Method(), "]","URL:", c.OriginalURL(), "| View: RsvpView")
+	//LOG.Println("Extract Token from QueryParams or Cookie...")
 	isTokenValid, whoami, user := extractTokenFromQueryOrCookieAndValidate(c)
 	if isTokenValid {
-		LOG.Println("Token is valid, setting it in Cookie...")
+		//LOG.Println("Token is valid, setting it in Cookie...")
 		SetTokenCookie(c, whoami.Token)
 
-		LOG.Println("Parsing the RSVP Status from Request Body...")
+		//LOG.Println("Parsing the RSVP Status from Request Body...")
 		rsvp := new(Rsvp)
 		if err := c.BodyParser(rsvp); err != nil {
-			LOG.Println("Parsing failed, return StatusBadRequest, and redirect back to Card")
+			//LOG.Println("Parsing failed, return StatusBadRequest, and redirect back to Card")
 			return c.Status(fiber.StatusBadRequest).Redirect("/card")
 		}
-		LOG.Println("Parsing successful, setting the User.Rsvp...")
+		//LOG.Println("Parsing successful, setting the User.Rsvp...")
 		user.Rsvp = rsvp.Rsvp
 		result := DB.Save(&user)
 		if result.Error != nil {
-			LOG.Println("Failed to set the RSVP status in DB...")
+			//LOG.Println("Failed to set the RSVP status in DB...")
 			return c.Status(fiber.StatusBadRequest).Redirect("/card")
 		}
-		LOG.Println("RSVP Status of User changed...")
+		//LOG.Println("RSVP Status of User changed...")
 		return c.Redirect("/card")
 	} else {
-		LOG.Println("Token Invalid, return StatusUnauthorized")
+		//LOG.Println("Token Invalid, return StatusUnauthorized")
 		return c.Status(fiber.StatusUnauthorized).Redirect("/whoami")
 	}
 }
@@ -133,7 +133,7 @@ func RsvpView(c *fiber.Ctx) error {
 // | a catch-all view to catch all misc URLs and redirect
 // instead of throwing errors
 func RedirectToWhoAmI(c *fiber.Ctx) error {
-	LOG.Println("[", c.Method(), "]","URL:", c.OriginalURL(), "| View: RedirectToWhoAmI")
-	LOG.Println("Redirecting and undefined Admin URL to WhoAmI View...")
+	//LOG.Println("[", c.Method(), "]","URL:", c.OriginalURL(), "| View: RedirectToWhoAmI")
+	//LOG.Println("Redirecting and undefined Admin URL to WhoAmI View...")
 	return c.Status(fiber.StatusNotFound).Redirect("/whoami")
 }

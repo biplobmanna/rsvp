@@ -9,15 +9,15 @@ import (
 var SEEDERS = 100
 
 func seedUser(db *gorm.DB) {
-	LOG.Println("Seeding User...")
+	//LOG.Println("Seeding User...")
 	fake := faker.New()
 	errors, rowsAffected := 0, 0
-	LOG.Println("Generating", SEEDERS, "seeds for Users...")
+	//LOG.Println("Generating", SEEDERS, "seeds for Users...")
 	for i := range SEEDERS {
 		username := fake.Internet().User()
 		token, err := EncryptAES(username+SETTINGS.ADMIN_TOKEN)
 		if err != nil {
-			LOG.Fatal(err)
+			//LOG.Fatal(err)
 		}
 
 		user := User{
@@ -36,6 +36,6 @@ func seedUser(db *gorm.DB) {
 			rowsAffected += 1
 		}
 	}
-	LOG.Println("  🔵 Rows Affected: ", rowsAffected)
-	LOG.Println("  🔵 Errors While Seeding: ", errors)
+	//LOG.Println("  🔵 Rows Affected: ", rowsAffected)
+	//LOG.Println("  🔵 Errors While Seeding: ", errors)
 }
