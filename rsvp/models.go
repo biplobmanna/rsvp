@@ -7,18 +7,11 @@ import (
 
 // any model struct that you create, add to this interface
 type Model interface {
-	Admin | User
-}
-
-type Admin struct {
-	gorm.Model
-	User  string
-	Token string
+	User
 }
 
 type User struct {
 	gorm.Model
-	User     string
 	FullName string
 	Token    string
 	Email    string

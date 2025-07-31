@@ -5,9 +5,9 @@ import (
 	"encoding/hex"
 )
 
-func EncryptAES(s Settings, text string) (string, error) {
+func EncryptAES(text string) (string, error) {
 	// initialize the aes with the SECRET_KEY
-	c, err := aes.NewCipher([]byte(s.SECRET_KEY))
+	c, err := aes.NewCipher([]byte(SETTINGS.SECRET_KEY))
 	if err != nil {
 		return "", err
 	}
@@ -20,7 +20,7 @@ func EncryptAES(s Settings, text string) (string, error) {
 	return hex.EncodeToString(cipher), nil
 }
 
-func DecryptAES(s Settings, cipher string) (string, error) {
+func DecryptAES(cipher string) (string, error) {
 	// convert the HEX String to []byte
 	ciphertext, err := hex.DecodeString(cipher)
 	if err != nil {
@@ -28,7 +28,7 @@ func DecryptAES(s Settings, cipher string) (string, error) {
 	}
 
 	// initialize the aes with SECRET_KEY
-	c, err2 := aes.NewCipher([]byte(s.SECRET_KEY))
+	c, err2 := aes.NewCipher([]byte(SETTINGS.SECRET_KEY))
 	if err2 != nil {
 		return "", err2
 	}

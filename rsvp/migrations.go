@@ -17,7 +17,6 @@ func Migrate[M Model](db *gorm.DB, m *M, desc ...string) {
 
 func MigrateAll(db *gorm.DB) {
 	fmt.Println("🟣 Running All Migrations...")
-	Migrate(db, &Admin{}, "Admin")
 	Migrate(db, &User{}, "User")
 }
 

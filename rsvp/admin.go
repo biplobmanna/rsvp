@@ -168,6 +168,12 @@ func AdminViewUserCrud(c *fiber.Ctx) error {
 		}
 		// trim the space from users comments
 		user.Comments = strings.TrimSpace(user.Comments)
+		token, err := EncryptAES(user.FullName+SETTINGS.ADMIN_TOKEN)
+		if err != nil {
+			c.SendStatus(fiber.StatusExpectationFailed)
+		}
+		user.Token = token
+
 
 		// update the DB
 		// if the user is a new user, the "id" is NIL,
