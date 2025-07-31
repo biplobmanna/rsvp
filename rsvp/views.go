@@ -81,7 +81,7 @@ func CardView(c *fiber.Ctx) error {
 		//LOG.Println("Generating a shareable URL for User...")
 		cardUrl, _ := c.GetRouteURL("card", fiber.Map{})
 		cardUrl = c.BaseURL() + cardUrl + "/?t=" + user.Token[:32]
-		imageUrl := c.BaseURL() + "/static/img/logo-light.svg"
+		imageUrl := c.BaseURL() + "/static/img/og-logo.jpg"
 
 		//LOG.Println("Render and return CARD page with all data...")
 		return c.Render("card", fiber.Map{
