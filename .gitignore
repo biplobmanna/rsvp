@@ -17,8 +17,5 @@ node_modules/
 # Ignore SQLite DB
 *.db
 
-# deploy.sh
-deploy.sh
-
 # ignore log files
 *.log
