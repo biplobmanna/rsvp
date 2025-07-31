@@ -4,7 +4,7 @@
   class="h-screen w-screen overflow-hidden bg-transparent"
 >
   <div class="flex h-full max-h-1/2 w-screen items-center justify-center">
-    <div class="max-h-full w-fit max-w-xl p-4">
+    <div class="max-h-full w-fit max-w-xl p-4 md:w-full">
       <!-- Modal content -->
       <div class="rounded-lg bg-white shadow-sm dark:bg-gray-700">
         <!-- Modal header -->
@@ -38,9 +38,9 @@
         </div>
         <!-- Modal body -->
         <div class="space-y-4 p-4 md:p-5">
-          <div class="flex items-center">
+          <div class="flex items-center justify-center">
             <input
-              id="share-link"
+              id="maps-share-link"
               type="text"
               value="https://maps.app.goo.gl/xSG6zeUUdAnjkZZr7"
               readonly
@@ -48,7 +48,7 @@
               disabled
             />
             <button
-              onclick="copyLink()"
+              onclick="copyMapsLink()"
               class="cursor-pointer rounded-r-lg bg-blue-500 px-4 py-3 font-bold text-white transition duration-200 hover:bg-blue-600"
             >
               <svg
@@ -58,7 +58,7 @@
                 stroke-width="1.5"
                 stroke="currentColor"
                 class="h-5 w-5"
-                id="copy-svg"
+                id="maps-copy-svg"
               >
                 <path
                   stroke-linecap="round"
@@ -74,7 +74,7 @@
                 stroke-width="1.5"
                 stroke="currentColor"
                 class="hidden h-5 w-5"
-                id="tick-svg"
+                id="maps-tick-svg"
               >
                 <path
                   stroke-linecap="round"
@@ -97,21 +97,21 @@
   function closeMapsModal() {
     document.getElementById("maps-modal").close();
   }
-  function copyLink() {
-    const linkInput = document.getElementById("share-link");
+  function copyMapsLink() {
+    const linkInput = document.getElementById("maps-share-link");
     linkInput.select();
     navigator.clipboard.writeText(linkInput.value).then(() => {
-      toggleCopySvg(true);
-      setTimeout(() => toggleCopySvg(false), 2000);
+      toggleMapsLinkCopySvg(true);
+      setTimeout(() => toggleMapsLinkCopySvg(false), 2000);
     });
   }
-  function toggleCopySvg(tick = false) {
+  function toggleMapsLinkCopySvg(tick = false) {
     if (tick) {
-      document.getElementById("tick-svg").classList.remove("hidden");
-      document.getElementById("copy-svg").classList.add("hidden");
+      document.getElementById("maps-tick-svg").classList.remove("hidden");
+      document.getElementById("maps-copy-svg").classList.add("hidden");
     } else {
-      document.getElementById("tick-svg").classList.add("hidden");
-      document.getElementById("copy-svg").classList.remove("hidden");
+      document.getElementById("maps-tick-svg").classList.add("hidden");
+      document.getElementById("maps-copy-svg").classList.remove("hidden");
     }
   }
 </script>

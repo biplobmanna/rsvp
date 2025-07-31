@@ -73,7 +73,7 @@ func WhoAmIView(c *fiber.Ctx) error {
 		}
 	}
 	// this is a path flow, and redirects to the token form page
-	return c.Redirect("/whoami")
+	return c.Status(fiber.StatusUnauthorized).Redirect("/whoami")
 }
 
 
@@ -85,15 +85,22 @@ func CardView(c *fiber.Ctx) error {
 		// set token in the Cookie
 		SetTokenCookie(c, whoami.Token)
 
+		// if user is found, create a shareable URL for the user
+		cardUrl, _ := c.GetRouteURL("card", fiber.Map{})
+		cardUrl = c.BaseURL() + cardUrl + "/?t=" + user.Token[:32]
+		imageUrl := c.BaseURL() + "/static/img/logo-light.svg"
+
 		// return HTML template for teh RSVP card
 		return c.Render("card", fiber.Map{
 			"Title": "RSVP CARD",
 			"User": user,
+			"CardUrl": cardUrl,
+			"ImageUrl": imageUrl,
 		}, "card-base")
 
 	} else {
 		// in case of invalid token, redirect to the token form page
-		return c.Redirect("/whoami")
+		return c.Status(fiber.StatusUnauthorized).Redirect("/whoami")
 	}
 }
 
@@ -119,13 +126,14 @@ func RsvpView(c *fiber.Ctx) error {
 		return c.Redirect("/card")
 	} else {
 		// in case of invalid token, redirect to the token form page
-		return c.Redirect("/whoami")
+		return c.Status(fiber.StatusUnauthorized).Redirect("/whoami")
 	}
 }
+
 
 // ALL: Redirect User to GET: /whoami page
 // | a catch-all view to catch all misc URLs and redirect
 // instead of throwing errors
 func RedirectToWhoAmI(c *fiber.Ctx) error {
-	return c.Redirect("/whoami")
+	return c.Status(fiber.StatusNotFound).Redirect("/whoami")
 }
