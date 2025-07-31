@@ -1,76 +1,70 @@
-<div class="flex min-h-screen flex-col justify-center">
-  <div class="flex justify-center">
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-      <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
-        <caption
-          class="bg-white p-5 text-left text-lg font-semibold text-gray-900 rtl:text-right dark:bg-gray-800 dark:text-white">
-          All Users
-          <div class="flex justify-between">
-            <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-              List of all users invited to the ceremony. Manage all Users from this
-              page.
-            </p>
-            <a href="/admin/users/new"
-              class="w-fit rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-              + Add User
+<div class="flex justify-center">
+  <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full md:min-w-xl text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+      <caption
+        class="bg-white p-5 text-left text-lg font-semibold text-gray-900 rtl:text-right dark:bg-gray-800 dark:text-white">
+        All Users
+        <div class="flex flex-wrap justify-between space-y-2">
+          <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+            List of all users invited to the ceremony. </p>
+          <a href="/admin/users/new"
+            class="w-fit rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            + Add User
+          </a>
+        </div>
+      </caption>
+      <thead class="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
+        <tr>
+          <th scope="col" class="px-6 py-3 hidden md:table-cell">ID</th>
+          <th scope="col" class="px-6 py-3">Name</th>
+          <th scope="col" class="px-6 py-3 hidden md:table-cell">Email</th>
+          <th scope="col" class="px-6 py-3 hidden sm:table-cell">Phone</th>
+          <th scope="col" class="px-6 py-3">RSVP</th>
+          <th scope="col" class="px-6 py-3">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ range .Users }}
+        <tr
+          class="border-b border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
+          id="row-user-{{ .ID }}">
+          <td class="px-6 py-4 hidden md:table-cell">{{ .ID }}</td>
+          <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap text-gray-900 dark:text-white">
+            {{ .FullName }}
+          </th>
+          <td class="px-6 py-4 hidden md:table-cell">{{ .Email }}</td>
+          <td class="px-6 py-4 hidden sm:table-cell">{{ .Phone }}</td>
+          <td class="px-6 py-4">{{ .Rsvp }}</td>
+          <td class="flex space-x-2 px-6 py-4 text-right">
+            <a href="/admin/users/{{ .ID }}"
+              class="font-medium text-blue-200 hover:text-blue-600 dark:text-blue-200 dark:hover:text-blue-600"><svg
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="h-5 w-5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+              </svg>
             </a>
-          </div>
-        </caption>
-        <thead class="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
-          <tr>
-            <th scope="col" class="px-6 py-3">ID</th>
-            <th scope="col" class="px-6 py-3">Name</th>
-            <th scope="col" class="px-6 py-3">Email</th>
-            <th scope="col" class="px-6 py-3">Phone</th>
-            <th scope="col" class="px-6 py-3">RSVP</th>
-            <th scope="col" class="px-6 py-3">
-              <span class="sr-only">Actions</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {{ range .Users }}
-          <tr
-            class="border-b border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
-            id="row-user-{{ .ID }}">
-            <td class="px-6 py-4">{{ .ID }}</td>
-            <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap text-gray-900 dark:text-white">
-              {{ .FullName }}
-            </th>
-            <td class="px-6 py-4">{{ .Email }}</td>
-            <td class="px-6 py-4">{{ .Phone }}</td>
-            <td class="px-6 py-4">{{ .Rsvp }}</td>
-            <td class="flex space-x-2 px-6 py-4 text-right">
-              <a href="/admin/users/{{ .ID }}"
-                class="font-medium text-blue-200 hover:text-blue-600 dark:text-blue-200 dark:hover:text-blue-600"><svg
-                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="h-5 w-5">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                </svg>
-              </a>
-              <button onclick="deleteUser('{{ .ID }}')"
-                class="font-medium text-red-300 hover:text-red-500 dark:text-red-300 dark:hover:text-red-500">
+            <button onclick="deleteUser('{{ .ID }}')"
+              class="font-medium text-red-300 hover:text-red-500 dark:text-red-300 dark:hover:text-red-500">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="h-5 w-5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+              </svg>
+              <button />
+              <button onclick="showLinkModal('{{ .ID }}')"
+                class="font-medium text-blue-300 hover:text-blue-500 dark:text-blue-300 dark:hover:text-blue-500">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                   stroke="currentColor" class="h-5 w-5">
                   <path stroke-linecap="round" stroke-linejoin="round"
-                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                    d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
                 </svg>
                 <button />
-                <button onclick="showLinkModal('{{ .ID }}')"
-                  class="font-medium text-blue-300 hover:text-blue-500 dark:text-blue-300 dark:hover:text-blue-500">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="h-5 w-5">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                      d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
-                  </svg>
-                  <button />
-            </td>
-          </tr>
-          {{ end }}
-        </tbody>
-      </table>
-    </div>
+          </td>
+        </tr>
+        {{ end }}
+      </tbody>
+    </table>
   </div>
 </div>
 
