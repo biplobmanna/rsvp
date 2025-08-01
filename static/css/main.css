@@ -78,6 +78,8 @@
     --container-lg: 32rem;
     --container-xl: 36rem;
     --container-2xl: 42rem;
+    --container-3xl: 48rem;
+    --container-4xl: 56rem;
     --container-7xl: 80rem;
     --text-xs: .75rem;
     --text-xs--line-height: calc(1 / .75);
@@ -635,6 +637,10 @@
     justify-content: flex-end;
   }
 
+  .gap-2 {
+    gap: calc(var(--spacing) * 2);
+  }
+
   :where(.space-y-2 > :not(:last-child)) {
     --tw-space-y-reverse: 0;
     margin-block-start: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));
@@ -675,6 +681,10 @@
 
   .overflow-x-auto {
     overflow-x: auto;
+  }
+
+  .overflow-x-hidden {
+    overflow-x: hidden;
   }
 
   .rounded-full {
@@ -1042,6 +1052,14 @@
     outline-style: none;
   }
 
+  .\[-ms-overflow-style\:none\] {
+    -ms-overflow-style: none;
+  }
+
+  .\[scrollbar-width\:none\] {
+    scrollbar-width: none;
+  }
+
   @media (hover: hover) {
     .hover\:bg-blue-600:hover {
       background-color: var(--color-blue-600);
@@ -1135,10 +1153,6 @@
       display: block;
     }
 
-    .sm\:inline {
-      display: inline;
-    }
-
     .sm\:table-cell {
       display: table-cell;
     }
@@ -1153,16 +1167,8 @@
   }
 
   @media (min-width: 48rem) {
-    .md\:block {
-      display: block;
-    }
-
     .md\:flex {
       display: flex;
-    }
-
-    .md\:inline {
-      display: inline;
     }
 
     .md\:table-cell {
@@ -1185,6 +1191,10 @@
       width: 100vw;
     }
 
+    .md\:max-w-3xl {
+      max-width: var(--container-3xl);
+    }
+
     .md\:min-w-xl {
       min-width: var(--container-xl);
     }
@@ -1199,10 +1209,6 @@
 
     .md\:justify-center {
       justify-content: center;
-    }
-
-    .md\:overflow-hidden {
-      overflow: hidden;
     }
 
     .md\:p-5 {
@@ -1220,6 +1226,10 @@
   }
 
   @media (min-width: 64rem) {
+    .lg\:max-w-4xl {
+      max-width: var(--container-4xl);
+    }
+
     .lg\:max-w-7xl {
       max-width: var(--container-7xl);
     }
@@ -1347,6 +1357,10 @@
     .dark\:focus\:ring-gray-700:focus {
       --tw-ring-color: var(--color-gray-700);
     }
+  }
+
+  .\[\&\:\:-webkit-scrollbar\]\:hidden::-webkit-scrollbar {
+    display: none;
   }
 }
 
