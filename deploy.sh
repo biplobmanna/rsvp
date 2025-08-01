@@ -34,13 +34,13 @@ fi
 # Step 3: Setting appropriate permissions and ownerships
 log "Setting proper folder ownership for www-data..."
 if ! chown -R www-data:www-data /sites/rsvp; then
-        error "Setting ownership to www-data for /sites/rsvp failed"
+    error "Setting ownership to www-data for /sites/rsvp failed"
 fi
 
 # Step 4: Setting ownership of git to user: nomana
 log "Setting ownership of git to nomana..."
 if ! chown -R nomana:nomana /sites/rsvp/.git /sites/rsvp/.gitignore; then
-        error "Changing ownership to nomana for .git failed"
+    error "Changing ownership to nomana for .git failed"
 fi
 
 # Step 5: Restart app service
@@ -48,15 +48,13 @@ log "Restarting app service..."
 if ! systemctl restart abantibiplob.fun.service; then
     error "Failed to restart app service"
 fi
-systemctl status abantibiplob.fun.service
+systemctl status --no-block :abantibiplob.fun.service
 
 # Step 6: Restart nginx service
 log "Restarting nginx service..."
 if ! systemctl restart nginx; then
     error "Failed to restart nginx service"
 fi
-systemctl status nginx
+systemctl status --no-block nginx
 
 log "Deployment completed successfully"
-
-
