@@ -48,6 +48,7 @@ func (w *WhoAmI) ValidateTokenAndGetUser() (bool, User) {
 // method: validate admin token
 func (w *AdminWhoAmI) ValidateAdminToken() bool {
 	//LOG.Println("Validating Admin Token...")
+	//LOG.Println("Admin Token:", w)
 	return SETTINGS.ADMIN_TOKEN == w.SuperToken
 }
 
@@ -76,6 +77,7 @@ func AdminGetTokenCookie(c *fiber.Ctx) AdminWhoAmI {
 	//LOG.Println("Extracting Token from Cookie...")
 	whoami := new(AdminWhoAmI)
 	c.CookieParser(whoami) // ignoring error handling
+	//LOG.Println("Cookie:", whoami)
 	return *whoami
 }
 
@@ -84,6 +86,7 @@ func GetTokenQuery(c *fiber.Ctx) WhoAmI {
 	//LOG.Println("Extracting Token from Query Params...")
 	whoami := new(WhoAmI) 
 	whoami.Token = c.Query("t", "")
+	//LOG.Println("Cookie:", whoami)
 	return *whoami
 }
 

@@ -11,7 +11,7 @@ import (
 func extractTokenCookieAndValidateAdmin(c *fiber.Ctx) (bool, AdminWhoAmI) {
 	//LOG.Println("extract token from cookie and validate admin...")
 	whoami := AdminGetTokenCookie(c)
-	//LOG.Println("TOKEN:", whoami.Token)
+	//LOG.Println("TOKEN:", whoami.SuperToken)
 	return whoami.ValidateAdminToken(), whoami
 }
 
@@ -36,13 +36,18 @@ func AdminCheckWhoAmI(c *fiber.Ctx) error {
 		}, "base")
 	} else if c.Method() == "POST" {
 		whoami := new(AdminWhoAmI)
+		// since "token" is passed in POST request
+		// must extract that from body first
+		whoamiToken := new(WhoAmI)
 
 		//LOG.Println("Parsing the request body for Token...")
-		if err := c.BodyParser(whoami); err != nil {
+		if err := c.BodyParser(whoamiToken); err != nil {
 			//LOG.Println("Failed to parse the request body for Token...")
 			return c.Status(fiber.StatusUnauthorized).Redirect("/admin/whoami")
 		}
-		//LOG.Println("Check if the Token is valid...")
+		//LOG.Println("Setting the token parsed from Body to SuperToken...")
+		whoami.SuperToken = whoamiToken.Token
+		//LOG.Println("Check if the SuperToken is valid...")
 		isTokenValid := whoami.ValidateAdminToken()
 		if isTokenValid {
 			//LOG.Println("The token is valid, set the token in cookie...")
