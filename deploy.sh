@@ -48,7 +48,7 @@ log "Restarting app service..."
 if ! systemctl restart abantibiplob.fun.service; then
     error "Failed to restart app service"
 fi
-systemctl status --no-block :abantibiplob.fun.service
+systemctl status --no-block abantibiplob.fun.service
 
 # Step 6: Restart nginx service
 log "Restarting nginx service..."
