@@ -1,42 +1,43 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/static/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/static/css/main.css" rel="stylesheet" />
+    <title>{{ .Title }}</title>
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/x-icon" href="/static/favicon.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="/static/css/main.css" rel="stylesheet" />
-  <title>{{ .Title }}</title>
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="{{ .Title }} | {{ .User.FullName }}" />
+    <meta
+      property="og:description"
+      content="10th Aug 2025 | Abanti & Biplob | Marriage Registry"
+    />
+    <meta property="og:url" content="{{ .CardUrl }}" />
+    <meta property="og:image" content="{{ .ImageUrl }}" />
+    <meta property="og:image:url" content="{{ .ImageUrl }}" />
+    <meta property="og:image:secure" content="{{ .ImageUrl }}" />
+    <meta property="og:image:secure_url" content="{{ .ImageUrl }}" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="500" />
+    <meta property="og:image:height" content="500" />
+    <meta property="og:image:alt" content="Logo of Abanti & Biplob" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="{{ .Title }}" />
+  </head>
 
-  <!-- Open Graph Meta Tags -->
-  <meta property="og:title" content="{{ .Title }}" />
-  <meta property="og:description" content="10th Aug 2025 | Abanti & Biplob | Marriage Registry" />
-  <meta property="og:url" content="{{ .CardUrl }}" />
-  <meta property="og:image" content="{{ .ImageUrl }}" />
-  <meta property="og:image:url" content="{{ .ImageUrl }}" />
-  <meta property="og:image:secure" content="{{ .ImageUrl }}" />
-  <meta property="og:image:secure_url" content="{{ .ImageUrl }}" />
-  <meta property="og:image:type" content="image/jpeg" />
-  <meta property="og:image:width" content="500" />
-  <meta property="og:image:height" content="500" />
-  <meta property="og:image:alt" content="Logo of Abanti & Biplob" />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="{{ .Title }}" />
-</head>
-
-<body class="bg-white dark:bg-gray-800">
-  <!-- HEADER-->
-  {{ template "banner" .User }}
-  <!-- MAPS LINK SHARE -->
-  {{ template "maps-modal" }}
-  <!-- LINK SHARE MODAL -->
-  {{ template "link-modal" . }}
-  <!-- RSVP MODAL -->
-  {{ template "rsvp-modal" .User }}
-  <!-- EMBED CONTENT HERE -->
-  {{ template "card" }}
-  <!-- FOOTER -->
-  {{ template "footer" }}
-</body>
-
+  <body class="bg-white dark:bg-gray-800">
+    <!-- HEADER-->
+    {{ template "banner" .User }}
+    <!-- MAPS LINK SHARE -->
+    {{ template "maps-modal" }}
+    <!-- LINK SHARE MODAL -->
+    {{ template "link-modal" . }}
+    <!-- RSVP MODAL -->
+    {{ template "rsvp-modal" .User }}
+    <!-- EMBED CONTENT HERE -->
+    {{ template "card" }}
+    <!-- FOOTER -->
+    {{ template "footer" }}
+  </body>
 </html>
