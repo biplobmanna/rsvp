@@ -55,7 +55,7 @@ func WhoAmIView(c *fiber.Ctx) error {
 		isTokenValid, _ := whoami.ValidateTokenAndGetUser()
 		if isTokenValid {
 			//LOG.Println("Token is valid, setting it into Cookie...")
-			SetTokenCookie(c, whoami.Token)
+			SetTokenCookie(c, "token", whoami.Token)
 			//LOG.Println("Redirect to CARD Page...")
 			return c.Redirect("/card")
 
@@ -76,7 +76,7 @@ func CardView(c *fiber.Ctx) error {
 	isTokenValid, whoami, user := extractTokenFromQueryOrCookieAndValidate(c)
 	if isTokenValid {
 		//LOG.Println("Token is valid, setting it in Cookie...")
-		SetTokenCookie(c, whoami.Token)
+		SetTokenCookie(c, "token", whoami.Token)
 
 		//LOG.Println("Generating a shareable URL for User...")
 		cardUrl, _ := c.GetRouteURL("card", fiber.Map{})
@@ -105,7 +105,7 @@ func RsvpView(c *fiber.Ctx) error {
 	isTokenValid, whoami, user := extractTokenFromQueryOrCookieAndValidate(c)
 	if isTokenValid {
 		//LOG.Println("Token is valid, setting it in Cookie...")
-		SetTokenCookie(c, whoami.Token)
+		SetTokenCookie(c, "token", whoami.Token)
 
 		//LOG.Println("Parsing the RSVP Status from Request Body...")
 		rsvp := new(Rsvp)

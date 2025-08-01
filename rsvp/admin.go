@@ -8,9 +8,9 @@ import (
 
 // --- HELPER FUNCTIONS ---
 
-func extractTokenCookieAndValidateAdmin(c *fiber.Ctx) (bool, WhoAmI) {
+func extractTokenCookieAndValidateAdmin(c *fiber.Ctx) (bool, AdminWhoAmI) {
 	//LOG.Println("extract token from cookie and validate admin...")
-	whoami := GetTokenCookie(c)
+	whoami := AdminGetTokenCookie(c)
 	//LOG.Println("TOKEN:", whoami.Token)
 	return whoami.ValidateAdminToken(), whoami
 }
@@ -35,7 +35,7 @@ func AdminCheckWhoAmI(c *fiber.Ctx) error {
 			"CheckWhoAmIUrl": "/admin/whoami",
 		}, "base")
 	} else if c.Method() == "POST" {
-		whoami := new(WhoAmI)
+		whoami := new(AdminWhoAmI)
 
 		//LOG.Println("Parsing the request body for Token...")
 		if err := c.BodyParser(whoami); err != nil {
@@ -46,7 +46,7 @@ func AdminCheckWhoAmI(c *fiber.Ctx) error {
 		isTokenValid := whoami.ValidateAdminToken()
 		if isTokenValid {
 			//LOG.Println("The token is valid, set the token in cookie...")
-			SetTokenCookie(c, whoami.Token)
+			SetTokenCookie(c, "supertoken", whoami.SuperToken)
 			//LOG.Println("Redirecting to /admin/users with the cookie...")
 			return c.Redirect("/admin/users")
 		}
@@ -69,7 +69,7 @@ func AdminViewUsers(c *fiber.Ctx) error {
 
 	if isTokenValid {
 		//LOG.Println("The Token is valid, setting it back to the Cookie...")
-		SetTokenCookie(c, whoami.Token)
+		SetTokenCookie(c, "supertoken", whoami.SuperToken)
 
 		var results []User
 		result := DB.Table("users").Find(&results)
@@ -101,7 +101,7 @@ func AdminViewUserCrud(c *fiber.Ctx) error {
 	isTokenValid, whoami := extractTokenCookieAndValidateAdmin(c)
 	if isTokenValid {
 		//LOG.Println("The Token is valid, setting it back to the Cookie...")
-		SetTokenCookie(c, whoami.Token)
+		SetTokenCookie(c, "supertoken", whoami.SuperToken)
 	} else {
 		//LOG.Println("Token is INVALID!")
 		//LOG.Println("Redirecting back to /admin/whoami with Status: Unauthorized...")

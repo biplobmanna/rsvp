@@ -10,6 +10,11 @@ type WhoAmI struct {
 	Token string `json:"token" xml:"token" form:"token" cookie:"token"`
 }
 
+// struct to hold the Admin token
+type AdminWhoAmI struct {
+	SuperToken string `json:"supertoken" xml:"supertoken" form:"supertoken" cookie:"supertoken"`
+}
+
 // struct to hold the rsvp details
 type Rsvp struct {
 	Rsvp bool `json:"rsvp" xml:"rsvp" form:"rsvp" cookie:"rsvp"`
@@ -41,17 +46,17 @@ func (w *WhoAmI) ValidateTokenAndGetUser() (bool, User) {
 }
 
 // method: validate admin token
-func (w *WhoAmI) ValidateAdminToken() bool {
+func (w *AdminWhoAmI) ValidateAdminToken() bool {
 	//LOG.Println("Validating Admin Token...")
-	return SETTINGS.ADMIN_TOKEN == w.Token
+	return SETTINGS.ADMIN_TOKEN == w.SuperToken
 }
 
 // set token to cookie
-func SetTokenCookie(c *fiber.Ctx, token string) {
+func SetTokenCookie(c *fiber.Ctx, key, value string) {
 	//LOG.Println("Setting the Token into Cookie...")
 	cookie := new(fiber.Cookie)
-	cookie.Name = "token"
-	cookie.Value = token
+	cookie.Name = key
+	cookie.Value = value
 	cookie.Expires = time.Now().Add(1 * time.Hour)
 	cookie.Secure = true
 
@@ -62,6 +67,14 @@ func SetTokenCookie(c *fiber.Ctx, token string) {
 func GetTokenCookie(c *fiber.Ctx) WhoAmI {
 	//LOG.Println("Extracting Token from Cookie...")
 	whoami := new(WhoAmI)
+	c.CookieParser(whoami) // ignoring error handling
+	return *whoami
+}
+
+// get admin token from cookie
+func AdminGetTokenCookie(c *fiber.Ctx) AdminWhoAmI {
+	//LOG.Println("Extracting Token from Cookie...")
+	whoami := new(AdminWhoAmI)
 	c.CookieParser(whoami) // ignoring error handling
 	return *whoami
 }
