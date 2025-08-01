@@ -48,13 +48,13 @@ log "Restarting app service..."
 if ! systemctl restart abantibiplob.fun.service; then
     error "Failed to restart app service"
 fi
-systemctl status --no-block abantibiplob.fun.service
+systemctl --no-pager status abantibiplob.fun.service
 
 # Step 6: Restart nginx service
 log "Restarting nginx service..."
 if ! systemctl restart nginx; then
     error "Failed to restart nginx service"
 fi
-systemctl status --no-block nginx
+systemctl --no-pager status nginx.service
 
 log "Deployment completed successfully"
