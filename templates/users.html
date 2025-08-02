@@ -1,41 +1,54 @@
-<div class="flex justify-center">
-  <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+<div class="flex flex-col items-center">
+  <div class="flex justify-center shadow-md sm:rounded-lg">
     <table class="w-full md:min-w-xl text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
       <caption
-        class="bg-white p-5 text-left text-lg font-semibold text-gray-900 rtl:text-right dark:bg-gray-800 dark:text-white">
+        class="sticky top-0 bg-white p-5 text-left text-lg font-semibold text-gray-900 dark:bg-gray-800 dark:text-white">
         All Users
-        <div class="flex flex-wrap justify-between space-y-2">
-          <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+        <div class="flex flex-wrap justify-between gap-y-4">
+          <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400 w-full sm:w-fit">
             List of all users invited to the ceremony. </p>
           <a href="/admin/users/new"
-            class="w-fit rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            class="w-1/2 sm:w-48 md:w-60 rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
             + Add User
           </a>
         </div>
       </caption>
-      <thead class="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
+      <thead
+        class="sticky top-36 sm:top-24 bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
         <tr>
-          <th scope="col" class="px-6 py-3 hidden md:table-cell">ID</th>
-          <th scope="col" class="px-6 py-3">Name</th>
-          <th scope="col" class="px-6 py-3 hidden md:table-cell">Email</th>
-          <th scope="col" class="px-6 py-3 hidden sm:table-cell">Phone</th>
-          <th scope="col" class="px-6 py-3">RSVP</th>
-          <th scope="col" class="px-6 py-3">Actions</th>
+          <th scope="col" class="px-4 py-3 hidden md:table-cell">ID</th>
+          <th scope="col" class="px-4 py-3">Name</th>
+          <th scope="col" class="px-4 py-3 hidden lg:table-cell">Email</th>
+          <th scope="col" class="px-4 py-3 hidden md:table-cell">Phone</th>
+          <th scope="col" class="px-4 py-3">RSVP</th>
+          <th scope="col" class="px-4 py-3">Actions</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="overflow-y-auto max-h-screen">
         {{ range .Users }}
         <tr
           class="border-b border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
           id="row-user-{{ .ID }}">
-          <td class="px-6 py-4 hidden md:table-cell">{{ .ID }}</td>
-          <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap text-gray-900 dark:text-white">
-            {{ .FullName }}
+          <td class="px-4 py-4 hidden md:table-cell">{{ .ID }}</td>
+          <th scope="row" class="px-4 py-4 font-medium whitespace-nowrap text-gray-900 dark:text-white">
+            <a href="/admin/users/{{ .ID }}">
+              {{ .FullName }}
+            </a>
           </th>
-          <td class="px-6 py-4 hidden md:table-cell">{{ .Email }}</td>
-          <td class="px-6 py-4 hidden sm:table-cell">{{ .Phone }}</td>
-          <td class="px-6 py-4">{{ .Rsvp }}</td>
-          <td class="flex space-x-2 px-6 py-4 text-right">
+          <td class="px-4 py-4 hidden lg:table-cell">
+            <a href="/admin/users/{{ .ID }}">
+              {{ .Email }}
+            </a>
+          </td>
+          <td class="px-4 py-4 hidden md:table-cell">
+            <a href="/admin/users/{{ .ID }}">
+              {{ .Phone }}
+          </td>
+          <td class="px-4 py-4">
+            <a href="/admin/users/{{ .ID }}">
+              {{ .Rsvp }}
+          </td>
+          <td class="flex space-x-2 px-4 py-4 text-right">
             <a href="/admin/users/{{ .ID }}"
               class="font-medium text-blue-200 hover:text-blue-600 dark:text-blue-200 dark:hover:text-blue-600"><svg
                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -44,7 +57,7 @@
                   d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
               </svg>
             </a>
-            <button onclick="deleteUser('{{ .ID }}')"
+            <button onclick="showDeleteUserModal('{{ .ID }}')"
               class="font-medium text-red-300 hover:text-red-500 dark:text-red-300 dark:hover:text-red-500">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="h-5 w-5">
@@ -68,13 +81,58 @@
   </div>
 </div>
 
+<!-- DELETE USER CONFIRMATION MODAL -->
+<dialog id="delete-user-modal" tabindex="-1" class="overflow-auto h-screen w-screen bg-transparent">
+  <div class="flex h-full max-h-1/2 w-screen items-center justify-center">
+    <div class="max-h-full w-fit max-w-xl p-4 md:w-full">
+      <div class="flow-auto flow-hidden w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-transparent">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+          <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+            <p class="hidden" id="delete-user-id"></p>
+            <button type="button"
+              class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+              onclick="closeDeleteUserModal();">
+              <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 14 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+              </svg>
+              <span class="sr-only">Close modal</span>
+            </button>
+            <div class="p-4 md:p-5 text-center">
+              <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+              <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Are you sure you want to delete this
+                user?</h3>
+              <button type="button" id="delete-user-yes" onclick="deleteUser()"
+                class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                Yes, I'm sure
+              </button>
+              <button type="button" onclick="closeDeleteUserModal()" id="delete-user-no"
+                class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">No,
+                cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+
 <script>
-  async function deleteUser(id) {
+  async function deleteUser(id = null) {
+    if (id == null) {
+      id = document.getElementById("delete-user-id").innerHTML;
+    }
     const res = await fetch(`/admin/users/${id}`, {
       method: "DELETE",
     });
     if (res.status >= 200 && res.status <= 300) {
-      document.getElementById(`row-user-${id}`).remove();
+      window.location.reload();
     } else {
       console.error(`Response Status: ${res.status}`);
       console.error(`Failed to delete User {id:${id}}`);
@@ -82,14 +140,24 @@
   }
 
   async function getUserShareLink(id) {
+    document.getElementById("share-link").value = "Error fetching link...";
     const res = await fetch(`/admin/users/${id}/share`);
     if (res.status >= 200 && res.status <= 300) {
       const data = await res.text()
       document.getElementById("share-link").value = data;
-      console.log(data);
+      // console.log(data);
     } else {
       console.error(`Response Status: ${res.status}`);
       console.error(`Failed to get User share link`);
     }
+  }
+  async function showDeleteUserModal(userId) {
+    // console.log(`Delete User: ${userId}`);
+    document.getElementById("delete-user-id").innerHTML = userId;
+    document.getElementById("delete-user-modal").showModal();
+  }
+  async function closeDeleteUserModal() {
+    document.getElementById("delete-user-id").innerHTML = "";
+    document.getElementById("delete-user-modal").close();
   }
 </script>
