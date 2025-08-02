@@ -4,7 +4,7 @@
     if (id == null) {
       shareData = {
         title: "RSVP Card: {{ .User.FullName }}",
-        text: "Dear {{ .User.FullName }}, please join us for a small celebration",
+        // text: "Dear {{ .User.FullName }}, please join us for a small celebration",
         url: "{{ .CardUrl }}",
       };
       navigator.share(shareData);
@@ -14,7 +14,7 @@
         const url = await res.text();
         shareData = {
           title: "RSVP Card",
-          text: "Share RSVP Card Link with User",
+          // text: "Share RSVP Card Link with User",
           url: url,
         };
         navigator.share(shareData);
