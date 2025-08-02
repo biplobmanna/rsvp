@@ -1,0 +1,28 @@
+<script>
+  async function shareCardLink(id = null) {
+    let shareData;
+    if (id == null) {
+      shareData = {
+        title: "RSVP Card: {{ .User.FullName }}",
+        text: "Dear {{ .User.FullName }}, please join us for a small celebration",
+        url: "{{ .CardUrl }}",
+      };
+      navigator.share(shareData);
+    } else {
+      const res = await fetch(`/admin/users/${id}/share`);
+      if (res.status >= 200 && res.status <= 300) {
+        const url = await res.text();
+        shareData = {
+          title: "RSVP Card",
+          text: "Share RSVP Card Link with User",
+          url: url,
+        };
+        navigator.share(shareData);
+      } else {
+        console.error(`Response Status: ${res.status}`);
+        console.error(`Failed to get User share link`);
+        return;
+      }
+    }
+  }
+</script>
